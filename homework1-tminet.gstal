@@ -1,0 +1,71 @@
+NOP ;--------------------------------------------------------
+NOP	; Programmer--Thais Minet
+NOP	; Course------CS 4223
+NOP	; Project-----Homework #1
+NOP	; Due---------September 1, 2017
+NOP		
+NOP	; This program computes and displays an estimated square
+NOP	; root.
+NOP ;--------------------------------------------------------
+NOP
+NOP			; load initial variables and read input
+ISP 4
+LLI 83		; S character
+PTC
+LLI 32		; space character
+PTC
+LAA 0		; load address of x
+INF
+STO			; store x
+LAA 2		; load address of newEstimate
+LLF 1.0		; load initial value of newEstimate
+STO			; store initial value of newEstimate 
+NOP
+NOP			; begin do while loop
+NOP
+LAA 1		; load address of estimate
+LAA 2		; load address of newEstimate
+LOD			; load value of newEstimate
+STO			; store value of newEstimate in estimate
+NOP
+LAA 2		; load address of newEstimate
+LLF 0.5		; push 0.5 to top of stack
+LAA 1		; load address of estimate
+LOD			; load value of estimate
+LAA 0		; load address of x
+LOD			; load value of x
+LAA 1		; load address of estimate
+LOD			; load value of estimate
+DVF			; divide x/estimate
+ADF			; add estimate + x/esitmate
+MLF			; multiply 0.5 * (estimate + x/estimate)
+STO			; store value in newEstimate
+NOP
+LAA 3		; load address of difference
+LAA 2		; load address of newEstimate
+LOD			; load value of newEstimate
+LAA 1		; load address of estimate
+LOD			; load value of estimate
+SBF			; subtract newEstimate - estimate
+STO			; store value in difference
+NOP
+LAA 3		; load address of difference
+LOD			; load value of difference
+LLF -0.005	
+LTF			; difference < -0.005
+LAA 3		; load address of difference
+LOD			; load value of difference
+LLF 0.005	
+GTF			; difference > 0.005
+ADI			; addition as or statement
+JPF 62		; jump past loop jump if false
+JMP 25
+LAA 2
+LOD
+LLI 65		; A character
+PTC
+LLI 32		; space character
+PTC
+PTF			; print final value of newEstimate
+PTL
+HLT
