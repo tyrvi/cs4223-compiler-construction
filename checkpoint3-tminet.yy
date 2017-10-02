@@ -103,8 +103,12 @@ term            : term MUL factor
                 ;
 
 factor          : LPAREN expr RPAREN
-                | SUB expr
-                | variable
+                | SUB factor
+                | ADD factor
+                | atom
+                ;
+
+atom            : variable
                 | constant
                 ;
 
