@@ -66,15 +66,15 @@
 
 "<"                                                       { printf("LESS: %s\n", yytext); }
 
-"<="                                                      { printf("LESS_EQUAL: %s\n", yytext); }
+"<="                                                      { printf("LESS_EQ: %s\n", yytext); }
 
 ">"                                                       { printf("GREATER: %s\n", yytext); }
 
-">="                                                      { printf("GREATER_EQUAL: %s\n", yytext); }
+">="                                                      { printf("GREATER_EQ: %s\n", yytext); }
 
 "="                                                       { printf("EQUAL: %s\n", yytext); }
 
-"<>"                                                      { printf("NOT_EQUAL: %s\n", yytext); }
+"<>"                                                      { printf("NOT_EQ: %s\n", yytext); }
 
 "+"                                                       { printf("ADD: %s\n", yytext); }
 
