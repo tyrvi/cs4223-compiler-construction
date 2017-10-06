@@ -5,6 +5,7 @@ routine         : MAIN END_STMT data algorithm END MAIN END_STMT
                 ;
                 
 data            : DATA COLON declarationList
+                | DATA COLON
                 ;
                 
 declarationList : declaration END_STMT declarationList
@@ -24,7 +25,8 @@ variableList    : VARIABLE COMMA variableList
                 | VARIABLE LBRACKET INT_CONST RBRACKET
                 ;
 
-algorithm       : body
+algorithm       : ALGORITHM COLON body
+                | ALGORITHM COLON
                 ;
 
 body            : stmtList
