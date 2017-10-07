@@ -115,7 +115,7 @@ atom            : variable
                 ;
 
 variable        : arrayVariable
-                | VARAIBLE
+                | VARIABLE
                 ;
 
 arrayVariable   : VARIABLE LBRACKET expr RBRACKET
