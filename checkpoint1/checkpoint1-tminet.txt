@@ -1,0 +1,52 @@
+Thais Minet
+9/16/17
+CS 4423
+
+Checkpoint #1
+
+WHITESPACE:             [\t ]+
+MAIN:                   [mM][aA][iI][nN]
+DATA:                   [dD][aA][tT][aA]
+ALGORITHM:              [aA][lL][gG][oO][rR][iI][tT][hH][mM]
+END_STATEMENT:          ";"
+IF:                     [iI][fF]
+ELSE:                   [eE][lL][sS][eE]
+WHILE:                  [wW][hH][iI][lL][eE]
+COUNTING:               [cC][oO][uU][nN][tT][iI][nN][gG]
+UPWARD:                 [uU][pP][wW][aA][rR][dD]
+DOWNWARD:               [dD][oO][wW][nN][wW][aA][rR][dD]
+TO:                     [tT][oO]
+EXIT:                   [eE][xX][iI][tT]
+END:                    [eE][nN][dD]
+REAL:                   [rR][eE][aA][lL]
+INTEGER:                [iI][nN][tT][eE][gG][eE][rR]
+VARIABLE:               [a-zA-Z][a-zA-Z0-9]*
+REAL_CONST:             [-+]?(([0-9]+\.[0-9]+)|([0-9]+(\.[0-9]+)?[eE][-+][0-9]+))
+INTEGER_CONST:          [0-9]+
+CHAR_STRING_CONST:      \"([^"\n]|(\"\"))*["\n]
+COLON:                  ":"
+PRINT:                  [pP][rR][iI][nN][tT]
+READ:                   [rR][eE][aA][dD]
+ASSIGNMENT:             ":="
+AND:                    "&"
+OR:                     "|"
+NOT:                    "~"
+LESS:                   "<"
+LESS_EQUAL:             "<="
+GREATER:                ">"
+GREATER_EQUAL:          ">="
+EQUAL:                  "="
+NOT_EQUAL:              "<>"
+ADD:                    "+"
+SUB:                    "-"
+MUL:                    "*"
+DIV:                    "/"
+MOD:                    "%"
+OPEN_PAREN:             "("
+CLOSE_PAREN:            ")"
+OPEN_BRACKET:           "["
+CLOSE_BRACKET:          "]"
+COMMENT:                #[^\n]*
+CARRIAGE_RETURN:        "!"
+COMMA:                  ","
+NEWLINE:                \n
