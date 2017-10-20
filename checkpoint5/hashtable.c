@@ -1,45 +1,32 @@
+/*
+* ========================================================================
+* 
+* Thais Minet
+* CS 4223 Checkpoint #5
+* hashtable.c
+* 
+* ========================================================================
+*/
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include "hashtable.h"
 
-int main() {
-    /*
-    char name[255];
-    int dt;
-    int type;
-    int addr;
-    int size;
-    
+int insert(char *name, int datatype, int type, int addr, int size) {
     symbol *s;
+    s = (symbol *) malloc(sizeof(symbol));
+    *s = make_symbol(name, datatype, type, addr, size);
     
-    for (int i = 0; i < 4; i++) {
-        scanf("%s", name);
-        scanf("%d", &dt);
-        scanf("%d", &type);
-        scanf("%d", &addr);
-        scanf("%d", &size);
-        s = (symbol *) malloc(sizeof(symbol));
-        *s = make_symbol(name, dt, type, addr, size);
-        int i = insert_symbol(symboltable, s);
-        printf("insert returned %d\n", i);
-    }
-
-    disp_table(symboltable);
-    
-    return 0;
-    */
+    return insert_symbol(symboltable, s);
 }
 
 int insert_symbol(symbol *symboltable[], symbol *s) {
     int i = 0;
     unsigned long h = hash(s->name, M);
     
-    printf("hash = %lu for %s\n", h, s->name);
-    printf("--------------------\n");
-    
     while (symboltable[(h+i)%M] != NULL) {
-        if (!strcmp(symboltable[(h+i)%M]->name, s->name)) return -1;
+        if (!strcmp(symboltable[(h+i)%M]->name, s->name)) return -1; // duplicate variable
         i++;
     }
     symboltable[(h+i)%M] = s;
@@ -76,7 +63,7 @@ void disp_symbol(symbol s) {
     printf("size = %d\n", s.size);
 }
 
-void disp_table(symbol *symboltable[]) {
+void disp_table() {
     for (int i = 0; i < M; i++) {
         if (symboltable[i] != NULL) {
             printf("--------------------\n");
