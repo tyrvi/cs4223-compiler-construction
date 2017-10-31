@@ -1,4 +1,4 @@
-/*
+3/*
  * ========================================================================
  * 
  * sample.h ----- In-class example of a header file to be used in conjunc-

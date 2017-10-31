@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "hashtable.h"
+#include "symboltable.h"
 
 int insert(char *name, int datatype, int type, int addr, int size) {
     symbol *s;
@@ -21,10 +21,18 @@ int insert(char *name, int datatype, int type, int addr, int size) {
     return insert_symbol(symboltable, s);
 }
 
-symbol search(char *name) {
+symbol* search(char *name) {    
     int i = 0;
-    unsigned long h = hash(name, M);    
- 
+    unsigned long h = hash(name, M);
+
+    while (symboltable[(h+i)%M] != NULL) {
+        if (!strcmp(symboltable[(h+i)%M]->name, name)) {
+            return symboltable[(h+i)%M];
+        }
+        i++;
+    }
+    
+    return (symbol *) NULL;
 }
 
 int insert_symbol(symbol *symboltable[], symbol *s) {
@@ -53,28 +61,22 @@ symbol make_symbol(char *name, int datatype, int type, int addr, int size) {
 }
 
 void disp_symbol(symbol s) {
-    printf("name = %s\n", s.name);
 
-    if (s.datatype == 0)
-        printf("datatype = %s\n", "INTEGER");
-    else
-        printf("datatype = %s\n", "REAL");
-    
-    if (s.type == 0)
-        printf("type = %s\n", "SCALAR");
-    else
-        printf("type = %s\n", "ARRAY");
-    
-    printf("address = %d\n", s.addr);
-    printf("size = %d\n", s.size);
+    printf("|%-12s|%-9s|%-6s|%-6d|%-6d|\n", s.name,
+           s.datatype == 0 ? "INTEGER" : "REAL",
+           s.type == 0 ? "SCALAR" : "ARRAY",
+           s.size, s.addr);    
 }
 
 void disp_table() {
+    printf("+------+------------+---------+------+------+------+\n");
+    printf("|Pos   |name        |datatype |type  |size  |addr  |\n");
+    printf("+------+------------+---------+------+------+------+\n");
     for (int i = 0; i < M; i++) {
         if (symboltable[i] != NULL) {
-            printf("--------------------\n");
-            printf("POS: %d\n", i);
+            printf("|%-6d", i);
             disp_symbol(*symboltable[i]);
+            printf("+------+------------+---------+------+------+------+\n");
         }
     }
 }
