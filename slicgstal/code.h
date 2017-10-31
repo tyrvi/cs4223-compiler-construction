@@ -11,7 +11,7 @@ Array code;
 
 void init_code(Array *code, int initsize);
 void add_code(Array *code, char *instr);
-void insert_code(Array *code, char *instr, int offset);
+void insert_code(Array *code, char *instr, size_t offset);
 void disp_code(Array *code);
 void free_code(Array *code);
 

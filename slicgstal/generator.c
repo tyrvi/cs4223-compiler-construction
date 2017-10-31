@@ -7,7 +7,7 @@
 #define ADD_CODE(c, ...) { char *instr = malloc(sizeof(char *)*50); sprintf(instr, c, __VA_ARGS__); add_code(&code, instr); }
 #define ADD_UNARY(c) { char *instr = malloc(sizeof(char *)*50); sprintf(instr, c); add_code(&code, instr); }
 #define INSERT_CODE(c, offset, ...) { char *instr = malloc(sizeof(char *)*50); sprintf(instr, c, __VA_ARGS__), insert_code(&code, instr, offset); }
-#define INSERT_UNARY(c) { char *instr = malloc(sizeof(char *)*50); sprintf(instr, c); add_code(&code, instr); }
+#define INSERT_UNARY(c, offset) { char *instr = malloc(sizeof(char *)*50); sprintf(instr, c); insert_code(&code, instr, offset); }
 
 int code_gen(ast *root) {    
     initialize();
@@ -23,6 +23,8 @@ int code_gen(ast *root) {
     }
 
     ADD_UNARY("HLT ; end prgm");
+    //INSERT_CODE("NOP ; inserted 1st here %s", 1, "offset = 1");
+    //INSERT_CODE("NOP ; inserted 2nd here %s", 3, "offset = 3");
     
     printf("\n# STMTS = %d\n", num_stmts);
     disp_code(&code);
@@ -67,7 +69,6 @@ int print_gen(ast *a) {
     ast *printitem = a->r;
 
     ADD_UNARY("NOP ; print statement");
-    //printf("NOP ; print statement\n");
     while (printitem != NULL) {
         if (printitem->nodetype == STRING) {
             pstring_gen(printitem->str);

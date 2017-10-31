@@ -19,16 +19,41 @@ void add_code(Array *code, char *instr) {
     code->array[code->used++] = instr;
 }
 
-void insert_code(Array *code, char *instr, int offset) {
-    return;
+// inserted instr at offset postion from the end
+// eg. if we insert "e" with offset = 3 into *code = {"a", "b", "c", "d"}
+// *code = {"a", "b", "e", "c", "d"}
+void insert_code(Array *code, char *instr, size_t offset) {
+    if (code->used == code->size) {
+        code->size *= 2;
+        code->array = (char **) realloc(code->array, code->size * sizeof(char *)*50);
+    }
+    
+    size_t i;
+    //offset++;
+    for (i = code->used; i > (code->used-offset); i--) {
+        code->array[i+1] = code->array[i];        
+    }
+    code->used++;
+    code->array[code->used - offset] = instr;    
+
 }
 
 void disp_code(Array *code) {
     int i;
     printf("\nCODE:\n");
+    /*
     while (code->array[i] != NULL) {
         printf("%s\n", code->array[i]);
         i++;
+    }
+    */
+    for (i = 0; i < code->used; i++) {
+        if (code->array[i] != NULL) {
+            printf("%d\t%s\n", i, code->array[i]);
+        }
+        else {
+            printf("%d\tNULL ; **ERROR** null statement\n", i);
+        }
     }
 }
 
