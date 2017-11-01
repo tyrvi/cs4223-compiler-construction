@@ -230,7 +230,7 @@ expr            : expr AND comp
                   }
                 | NOT expr
                 {
-                      ast *a = new_ast(ADD);
+                      ast *a = new_ast(NOT);
                       a->unary = $2;
                       $$ = a;
                 }

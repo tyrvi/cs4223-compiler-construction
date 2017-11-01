@@ -121,39 +121,112 @@ int expr_gen(ast *a) {
         
         return type;
     }
-    else if (a->unary) {
+    else if (a->nodetype == NOT) {
+        ADD_UNARY("NOP ; begin not");
         type = expr_gen(a->unary);
 
-        if (a->nodetype == NOT) {
-            ADD_UNARY("NOP ; not operation");
-            if (type  == REAL_CONST) {            
-                ADD_CODE("LLF %f", 0.0f);
-                ADD_UNARY("EQF");
-            }
-            else {
-                ADD_CODE("LLI %d", 0);
-                ADD_UNARY("EQI");
-            }   
+        if (type  == REAL_CONST) {            
+            ADD_CODE("LLF %f", 0.0f);
+            ADD_UNARY("EQF");
+            ADD_UNARY("FTI");
         }
-        else if (a->nodetype == SUB) {
-            if (type == REAL_CONST) {
-                ADD_UNARY("NGF");
-            }
-            else {
-                ADD_UNARY("NGI");
-            }
+        else {
+            ADD_CODE("LLI %d", 0);
+            ADD_UNARY("EQI");
         }
-        else if (a->nodetype == ADD) {
-            ADD_UNARY("NOP ; unary +");
+        ADD_UNARY("NOP ; end not")
+        return INT_CONST;
+    }
+    else if (a->nodetype == SUB && a->unary) {
+        ADD_UNARY("NOP ; begin unary -");
+        type = expr_gen(a->unary);
+
+        if (type == REAL_CONST) {
+            ADD_UNARY("NGF");
         }
+        else {
+            ADD_UNARY("NGI");
+        }
+        ADD_UNARY("NOP ; end unary -")
+        return type;
+    }
+
+    else if (a->nodetype == ADD && a->unary) {
+        ADD_UNARY("NOP ; unary +");
+        type = expr_gen(a->unary);
 
         return type;
-    }    
+    }
 
     else if (a->nodetype == MOD) {
         return mod_gen(a);
     }
+    
+    else if (a->nodetype == AND) {
+        int ltype = expr_gen(a->l);
+        
+        ADD_UNARY("NOP ; begin and");
+        if (ltype == REAL_CONST) {
+            ADD_CODE("LLF %f", 0.0f);
+            ADD_UNARY("NEF");
+            ADD_UNARY("FTI");
+        }
+        else {
+            ADD_CODE("LLI %d", 0);
+            ADD_UNARY("NEI");
+        }
+        
+        int rtype = expr_gen(a->r);
+        if (rtype == REAL_CONST) {
+            ADD_CODE("LLF %f", 0.0f);
+            ADD_UNARY("NEF");
+            ADD_UNARY("FTI");
+        }
+        else {
+            ADD_CODE("LLI %d", 0);
+            ADD_UNARY("NEI");
+        }
 
+        ADD_UNARY("MLI");
+        ADD_CODE("LLI %d", 0);
+        ADD_UNARY("NEI");
+        ADD_UNARY("NOP ; end and");
+        return INT_CONST;            
+    }
+
+    else if (a->nodetype == OR) {
+        ADD_UNARY("NOP ; begin or");
+        int ltype = expr_gen(a->l);
+        
+        if (ltype == REAL_CONST) {
+            ADD_CODE("LLF %f", 0.0f);
+            ADD_UNARY("NEF");
+            ADD_UNARY("FTI");
+        }
+        else {
+            ADD_CODE("LLI %d", 0);
+            ADD_UNARY("NEI");
+        }
+        
+        int rtype = expr_gen(a->r);
+        if (rtype == REAL_CONST) {
+            ADD_CODE("LLF %f", 0.0f);
+            ADD_UNARY("NEF");
+            ADD_UNARY("FTI");
+        }
+        else {
+            ADD_CODE("LLI %d", 0);
+            ADD_UNARY("NEI");
+        }
+
+        ADD_UNARY("ADI");
+        ADD_CODE("LLI %d", 0);
+        ADD_UNARY("NEI");
+        ADD_UNARY("NOP ; end and");
+
+        return INT_CONST;            
+    }
+    
     else {
         int ltype = expr_gen(a->l);
         size_t castindex = code.used;
@@ -174,10 +247,10 @@ int expr_gen(ast *a) {
 
         if (type == REAL_TYPE) {
             switch (a->nodetype) {
-            case AND:
-                ADD_UNARY("MLF"); break;
-            case OR:
-                ADD_UNARY("ADF"); break;
+                //case AND:                
+                //ADD_UNARY("MLF"); break;
+                //case OR:
+                //ADD_UNARY("ADF"); break;
             case LT:
                 ADD_UNARY("LTF"); break;
             case LTE:
@@ -202,10 +275,10 @@ int expr_gen(ast *a) {
         }
         else {
             switch (a->nodetype) {
-            case AND:
-                ADD_UNARY("MLI"); break;
-            case OR:
-                ADD_UNARY("ADI"); break;
+                //case AND:
+                //ADD_UNARY("MLI"); break;
+                //case OR:
+                //ADD_UNARY("ADI"); break;
             case LT:
                 ADD_UNARY("LTI"); break;
             case LTE:
