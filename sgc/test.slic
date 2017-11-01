@@ -15,12 +15,12 @@ main;
     data:
         integer: x, y;          # The 4-digit year adjusted for Zeller's congruence.
         real: year, z[6];         # The month (1-12).
-      
+    
     algorithm:
         y := 2;
-        x := y+4;
+        x := 18%5;
         year := -(x + 2.0);# + -1.0e-2;
-        #print "x = ", x, !;
+        print "x = ", x, !;
         print "year = ", year, !;
 		#z[1] := year;
 		#z[2] := x - 3 + 2.0 - z[1];

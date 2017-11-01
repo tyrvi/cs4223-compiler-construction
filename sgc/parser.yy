@@ -25,7 +25,7 @@
     #include "ast.h"
 
     int datatype;
-    int addr;
+    int addr;    
 }
 
 
@@ -131,7 +131,7 @@ dataType        : INTEGER { datatype = INT_TYPE; }
 
 variableList    : VARIABLE COMMA variableList
                   {
-                      if (insert($1, datatype, 0, addr, 1) == -1) {
+                      if (insert($1, datatype, SCALAR, addr, 1) == -1) {
                           duplicate_variable($1);
                           YYERROR;
                       }
@@ -140,7 +140,7 @@ variableList    : VARIABLE COMMA variableList
                   }
                 | VARIABLE LBRACKET INT_CONST RBRACKET COMMA variableList
                   {
-                      if (insert($1, datatype, 1, addr, $3) == -1) {
+                      if (insert($1, datatype, ARRAY, addr, $3) == -1) {
                           duplicate_variable($1);
                           YYERROR;
                       }
@@ -149,7 +149,7 @@ variableList    : VARIABLE COMMA variableList
                   }
                 | VARIABLE
                   {
-                      if (insert($1, datatype, 0, addr, 1) == -1) {
+                      if (insert($1, datatype, SCALAR, addr, 1) == -1) {
                           duplicate_variable($1);
                           YYERROR;
                       }
@@ -158,7 +158,7 @@ variableList    : VARIABLE COMMA variableList
                   }
                 | VARIABLE LBRACKET INT_CONST RBRACKET
                   {
-                      if (insert($1, datatype, 1, addr, $3) == -1) {
+                      if (insert($1, datatype, ARRAY, addr, $3) == -1) {
                           duplicate_variable($1);
                           YYERROR;
                       }

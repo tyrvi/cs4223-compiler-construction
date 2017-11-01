@@ -34,8 +34,6 @@ int code_gen(ast *root) {
 }
 
 void initialize() {
-    disp_table(symboltable);
-
     int max_addr = -1;
 
     for (int i = 0; i < M; i++) {
@@ -44,9 +42,14 @@ void initialize() {
                 max_addr = symboltable[i]->addr;
         }
     }
+
+    insert("_dividend", INT_TYPE, SCALAR, max_addr+1, 1);
+    insert("_divisor", INT_TYPE, SCALAR, max_addr+2, 1);
+    disp_table(symboltable);
     
     init_code(&code, 128);
-    ADD_CODE("ISP %d", max_addr+1);
+    // 2 addresses for mod operands dividend and divisor
+    ADD_CODE("ISP %d", max_addr+3);
 }
 
 int stmt_gen(ast *a) {
@@ -86,7 +89,7 @@ int assign_gen(ast *a) {
 int add_varref(ast *a) {
     ADD_CODE("LRA %d ; %s", a->s->addr, a->s->name);
 
-    if (a->s->type == 1) {
+    if (a->s->type == ARRAY) {
         int type = expr_gen(a->unary);
         if (type == REAL_CONST) {
             ADD_UNARY("FTI");
@@ -228,16 +231,45 @@ int expr_gen(ast *a) {
 
         if (type == REAL_TYPE) return REAL_CONST;
         else return INT_CONST;
-        //return type ? REAL_CONST : INT_CONST;
     }
             
     return -1;
 }
 
 int mod_gen(ast *a) {
-    
-    
-    return 0;
+    symbol *dividend = search("_dividend");
+    symbol *divisor = search("_divisor");
+
+    ADD_UNARY("NOP ; a mod b = a a b / b * -");
+    int ltype = expr_gen(a->l);
+    if (ltype == REAL_CONST) {
+        ADD_UNARY("FTI");
+    }
+
+    // load a twice
+    ADD_CODE("LAA %d", dividend->addr);
+    ADD_UNARY("STM");
+    ADD_UNARY("LOD");
+    ADD_CODE("LAA %d", dividend->addr);
+    ADD_UNARY("LOD");
+
+    int rtype = expr_gen(a->r);
+    if (rtype == REAL_CONST) {
+        ADD_UNARY("FTI");
+    }
+
+    // load b
+    ADD_CODE("LAA %d", divisor->addr);
+    ADD_UNARY("STM");
+    ADD_UNARY("LOD");
+    ADD_UNARY("DVI");
+    ADD_CODE("LAA %d", divisor->addr);
+    ADD_UNARY("LOD");
+    ADD_UNARY("MLI");
+    ADD_UNARY("SBI");
+    ADD_UNARY("NOP ; mod end");
+        
+    return INT_CONST;
 }
 
 void print_gen(ast *a) {

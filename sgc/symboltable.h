@@ -6,6 +6,8 @@
 
 #define INT_TYPE 0
 #define REAL_TYPE 1
+#define SCALAR 0
+#define ARRAY 1
 
 // symbol struct in the symbol table
 typedef struct symbol {
