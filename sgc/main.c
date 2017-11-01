@@ -16,8 +16,10 @@
 #include "symboltable.h"
 #include "ast.h"
 #include "generator.h"
+#include "code.h"
 
 int testsymboltable();
+void test_array();
 
 int main() {
     
@@ -28,8 +30,20 @@ int main() {
         code_gen(root);
     }
     
-    //testsymboltable();
     return 0;
+}
+
+void test_array() {
+    Array t;
+    init_code(&t, 128);
+
+    for (int i = 0; i < 11; i++) {
+        add_code(&t, "instruction");
+    }
+
+    disp_code(&t);
+
+    insert_code(&t, "HERE", 5);
 }
 
 int testsymboltable() {

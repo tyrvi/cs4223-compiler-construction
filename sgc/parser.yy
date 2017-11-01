@@ -360,7 +360,10 @@ variable        : VARIABLE
                   }
                 | VARIABLE LBRACKET expr RBRACKET
                   {
-                      symbol *s = search($1);
+                      symbol *s;
+                      s = (symbol *) malloc(sizeof(symbol));
+                      s = search($1);
+
 
                       if (!s) {
                           undeclared_variable($1);
@@ -369,6 +372,7 @@ variable        : VARIABLE
 
                       ast *a = new_var(s);
                       a->unary = $3;
+                      $$ = a;
                   }
                 ;
 
