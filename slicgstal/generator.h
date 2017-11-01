@@ -20,6 +20,6 @@ int mod_gen(ast *a);
 int add_int_instr(char *instr, int n);
 int add_float_instr(char *instr, float f);
 void add_instr(char *instr);
-int add_varref(symbol *s);
+int add_varref(ast *a);
 
 #endif

@@ -6,7 +6,7 @@
 
 #define ADD_CODE(c, ...) { char *instr = malloc(sizeof(char *)*50); sprintf(instr, c, __VA_ARGS__); add_code(&code, instr); }
 #define ADD_UNARY(c) { char *instr = malloc(sizeof(char *)*50); sprintf(instr, c); add_code(&code, instr); }
-#define INSERT_CODE(c, offset, ...) { char *instr = malloc(sizeof(char *)*50); sprintf(instr, c, __VA_ARGS__), insert_code(&code, instr, offset); }
+#define INSERT_CODE(c, offset, ...) { char *instr = malloc(sizeof(char *)*50); sprintf(instr, c, __VA_ARGS__); insert_code(&code, instr, offset); }
 #define INSERT_UNARY(c, offset) { char *instr = malloc(sizeof(char *)*50); sprintf(instr, c); insert_code(&code, instr, offset); }
 
 int code_gen(ast *root) {    
@@ -44,7 +44,7 @@ int initialize() {
         }
     }
     
-    init_code(&code, 5);
+    init_code(&code, 128);
     ADD_CODE("ISP %d", max_addr+1);
 
     return 0;
@@ -104,13 +104,16 @@ int pstring_gen(char *str) {
 }
 
 int assign_gen(ast *a) {
+    int ltype;
+    int rtype;
     ADD_CODE("NOP ; assignment stmt for %s", a->l->s->name);
-    ADD_CODE("LRA %d", a->l->s->addr);
-    int type = expr_gen(a->r);
-    if (type == REAL_TYPE && a->l->s->datatype == INT_TYPE) {
+    ltype = add_varref(a->l);
+    rtype = expr_gen(a->r);
+
+    if (ltype == INT_TYPE && rtype == REAL_TYPE) {
         ADD_UNARY("FTI");
     }
-    else if (type == INT_TYPE && a->l->s->datatype == REAL_TYPE) {
+    else if (ltype == REAL_TYPE && rtype == INT_TYPE) {
         ADD_UNARY("ITF");
     }
     ADD_UNARY("STO");
@@ -121,7 +124,7 @@ int assign_gen(ast *a) {
 int expr_gen(ast *a) {
     int ltype;
     int rtype;
-    int type;
+    int type;    
 
     if (a->nodetype == INT_CONST) {
         ADD_CODE("LLI %d", a->n);
@@ -131,9 +134,10 @@ int expr_gen(ast *a) {
         ADD_CODE("LLF %f", a->f);
         type = REAL_TYPE;
     }
-    else if (a->nodetype == VARIABLE)
-        type = add_varref(a->s);
-    
+    else if (a->nodetype == VARIABLE) {
+        type = add_varref(a);
+        ADD_UNARY("LOD");
+    }
     else if (a->nodetype == NOT) {
         type = expr_gen(a->unary);
         ADD_UNARY("NOP ; not operation");
@@ -156,13 +160,113 @@ int expr_gen(ast *a) {
             ADD_UNARY("NGI");
         }
     }
-
+    
     else if (a->nodetype == ADD && a->unary) {
         type = expr_gen(a->unary);     
     }
 
-    else if (a->nodetype == MOD)
-        mod_gen(a);    
+    else if (a->nodetype == MOD) {
+        type = mod_gen(a);
+    }
+
+    else {
+        ltype = expr_gen(a->l);
+        size_t castdepth = code.used + 1;
+        rtype = expr_gen(a->r);
+        
+        size_t offset = code.used - castdepth;
+        if (ltype == INT_TYPE && rtype == REAL_TYPE) {
+            INSERT_UNARY("ITF ; cast left op", offset);
+            //INSERT_CODE("ITF ; cast left operand to real", offset);
+            type = REAL_TYPE;
+        }
+        else if (ltype == REAL_TYPE && rtype == INT_TYPE) {
+            ADD_UNARY("ITF ; cast right operand to real");
+            type = REAL_TYPE;
+        }
+        else {
+            if (type == REAL_TYPE) {
+                switch (a->nodetype) {
+                case AND:
+                    ADD_UNARY("MLF");
+                    break;
+                case OR:
+                    ADD_UNARY("ADF");
+                    break;
+                case LT:
+                    ADD_UNARY("LTF");
+                    break;
+                case LTE:
+                    ADD_UNARY("LEF");
+                    break;
+                case GT:
+                    ADD_UNARY("GTF");
+                    break;
+                case GTE:
+                    ADD_UNARY("GEF");
+                    break;
+                case EQ:
+                    ADD_UNARY("EQF");
+                    break;
+                case NEQ:
+                    ADD_UNARY("NEF");
+                    break;
+                case ADD:
+                    ADD_UNARY("ADF");
+                    break;
+                case SUB:
+                    ADD_UNARY("SBF");
+                    break;
+                case MUL:
+                    ADD_UNARY("MLF");
+                    break;
+                case DIV:
+                    ADD_UNARY("DVF");
+                    break;
+                }
+            }
+            else {
+                switch (a->nodetype) {
+                case AND:
+                    ADD_UNARY("MLF");
+                    break;
+                case OR:
+                    ADD_UNARY("ADF");
+                    break;
+                case LT:
+                    ADD_UNARY("LTF");
+                    break;
+                case LTE:
+                    ADD_UNARY("LEF");
+                    break;
+                case GT:
+                    ADD_UNARY("GTF");
+                    break;
+                case GTE:
+                    ADD_UNARY("GEF");
+                    break;
+                case EQ:
+                    ADD_UNARY("EQF");
+                    break;
+                case NEQ:
+                    ADD_UNARY("NEF");
+                    break;
+                case ADD:
+                    ADD_UNARY("ADF");
+                    break;
+                case SUB:
+                    ADD_UNARY("SBF");
+                    break;
+                case MUL:
+                    ADD_UNARY("MLF");
+                    break;
+                case DIV:
+                    ADD_UNARY("DVF");
+                    break;
+                }
+            }
+        }
+    }
             
     return type;
 }
@@ -171,10 +275,18 @@ int mod_gen(ast *a) {
     return 0;
 }
 
-int add_varref(symbol *s) {
-    ADD_CODE("NOP ; load %s", s->name);
-    ADD_CODE("LRA %d", s->addr);
-    ADD_UNARY("LOD");
+int add_varref(ast *a) {
+    int type;
 
-    return s->datatype ? REAL_TYPE : INT_TYPE;    
+    ADD_CODE("NOP ; load %s", a->s->name);
+    ADD_CODE("LRA %d", a->s->addr);
+    if (a->s->type) {
+        type = expr_gen(a->unary);
+        if (type == REAL_TYPE) {
+            ADD_UNARY("FTI");
+        }
+        ADD_UNARY("ADI");
+    }
+
+    return a->s->datatype ? REAL_TYPE : INT_TYPE;    
 }
