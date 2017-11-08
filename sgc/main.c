@@ -1,36 +1,86 @@
-/*
-* ========================================================================
-* 
-* Thais Minet
-* CS 4223
-* main.c
-* 
-* 
-* ========================================================================
-*/
-
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "y.tab.h"
-
 #include "symboltable.h"
 #include "ast.h"
 #include "generator.h"
 #include "code.h"
+#include "error.h"
 
-int testsymboltable();
-void test_array();
+int testsymboltable(void);
+void test_array(void);
+void usage(void);
 
-int main() {
+int main(int argc, char *argv[]) {
+    extern FILE *yyin;
+    FILE *out;
+    int debug = 0;
     
-    if (yyparse())
-        printf("Syntax error\n");
-    else {
-        
-        code_gen(root);
+    if (argc < 2) {
+        usage();
+        return 0;
     }
-    
+    else {
+        for (int i = 1; i < argc; i++) {
+            if (!strcmp(argv[i], "-h")) {
+                usage();
+                return 0;
+            }
+            
+            else if (!strcmp(argv[i], "-d"))
+                debug = 1;
+            
+            else if (!strcmp(argv[i], "-o")) {
+                out = fopen(argv[i+1], "w");
+                infile = argv[i+1];
+                i++;
+            }
+            
+            else if ((yyin = fopen(argv[i], "r")) == NULL) {
+                fprintf(stderr, "sgc: ERROR: no such file or directory %s\n", argv[i]);
+                return -1;
+            }
+        }
+    }
+
+    if (!yyin) {
+        fprintf(stderr, "sgc: ERROR: no input file\n");
+        return -1;
+    }
+
+
+    if (yyparse())
+        fprintf(stderr, "Syntax error\n");
+    else {        
+        code_gen(root);
+                
+        if (debug) {
+            disp_table(symboltable);
+            disp_code(&code);
+        }
+        else {            
+            if (!out)
+                out = fopen("a.gstal", "w");
+            
+            write_code(out, &code);
+
+            fclose(out);
+            fclose(yyin);
+        }
+    }    
+       
     return 0;
+}
+
+void usage() {
+    printf("sgc - slic to gstal compiler\n");
+    printf("Usage: sgc [options] file\n");
+    printf("Options:\n");
+    printf("%s-h%-12sDisplay this information\n", "  ", " ");
+    printf("%s-d%-12sPrint symbol table and gstal to stdout\n", "  ", " ");
+    printf("%s-o <file>%-5sPlace gstal output in <file>\n", "  ", " ");
+    printf("\nSee README for more information\n\n");
 }
 
 void test_array() {

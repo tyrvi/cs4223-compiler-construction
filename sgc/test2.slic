@@ -1,0 +1,7 @@
+main;
+	data:
+		integer: a;
+	algorithm:
+		a := 123;
+
+end main;

@@ -25,10 +25,7 @@ int code_gen(ast *root) {
         a = a->next;        
     }
 
-    ADD_UNARY("HLT ; end prgm");
-    
-    printf("\n# STMTS = %d\n", num_stmts);
-    disp_code(&code);
+    ADD_UNARY("HLT ; end prgm");    
     
     return 0;
 }
@@ -45,9 +42,8 @@ void initialize() {
 
     insert("_dividend", INT_TYPE, SCALAR, max_addr+1, 1);
     insert("_divisor", INT_TYPE, SCALAR, max_addr+2, 1);
-    disp_table(symboltable);
     
-    init_code(&code, 128);
+    init_code(&code, 512);
     // 2 addresses for mod operands dividend and divisor
     ADD_CODE("ISP %d", max_addr+3);
 }
@@ -247,10 +243,6 @@ int expr_gen(ast *a) {
 
         if (type == REAL_TYPE) {
             switch (a->nodetype) {
-                //case AND:                
-                //ADD_UNARY("MLF"); break;
-                //case OR:
-                //ADD_UNARY("ADF"); break;
             case LT:
                 ADD_UNARY("LTF"); break;
             case LTE:
@@ -275,10 +267,6 @@ int expr_gen(ast *a) {
         }
         else {
             switch (a->nodetype) {
-                //case AND:
-                //ADD_UNARY("MLI"); break;
-                //case OR:
-                //ADD_UNARY("ADI"); break;
             case LT:
                 ADD_UNARY("LTI"); break;
             case LTE:
@@ -306,7 +294,7 @@ int expr_gen(ast *a) {
         else return INT_CONST;
     }
             
-    return -1;
+    return UNKOWN_TYPE;
 }
 
 int mod_gen(ast *a) {

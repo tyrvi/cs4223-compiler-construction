@@ -16,13 +16,16 @@
     
     int yylex(void);
     int yyparse(void);
-    int yyerror();   
+    void yyerror(char *errmsg);   
     
 %}
 
 %code requires {
     #include "symboltable.h"
     #include "ast.h"
+
+    extern char* yytext;
+    extern int yylineno;    
 
     int datatype;
     int addr;    
@@ -140,6 +143,10 @@ variableList    : VARIABLE COMMA variableList
                   }
                 | VARIABLE LBRACKET INT_CONST RBRACKET COMMA variableList
                   {
+                      if ($3 < 1) {
+                          invalid_array_size($1);
+                          YYERROR;
+                      }
                       if (insert($1, datatype, ARRAY, addr, $3) == -1) {
                           duplicate_variable($1);
                           YYERROR;
@@ -387,7 +394,4 @@ constant        : INT_CONST
                 ;
 %%
 
-int yyerror() {
-    printf("Called yyerror()\n");
-    return 0;
-}
+int datatype = UNKOWN_TYPE;

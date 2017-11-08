@@ -45,10 +45,13 @@ extern int yydebug;
     #include "symboltable.h"
     #include "ast.h"
 
-    int datatype;
-    int addr;
+    extern char* yytext;
+    extern int yylineno;    
 
-#line 52 "y.tab.h" /* yacc.c:1909  */
+    int datatype;
+    int addr;    
+
+#line 55 "y.tab.h" /* yacc.c:1909  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -152,14 +155,14 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 32 "parser.yy" /* yacc.c:1909  */
+#line 35 "parser.yy" /* yacc.c:1909  */
 
     char *sval;
     int ival;
     float fval;
     ast *a;
 
-#line 163 "y.tab.h" /* yacc.c:1909  */
+#line 166 "y.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

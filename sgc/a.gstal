@@ -1,0 +1,6 @@
+ISP 3
+NOP ; assignment stmt a
+LRA 0 ; a
+LLI 123
+STO
+HLT ; end prgm

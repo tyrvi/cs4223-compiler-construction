@@ -22,7 +22,7 @@ main;
 		z := 1;
         a := (~(1 & 0)) | 1;
         #year := -(x + 2.0);# + -1.0e-2;
-        print "a = ", a, !;
+		print "a = ", a, !;
         #print "year = ", year, !;
 		#z[1] := year;
 		#z[2] := x - 3 + 2.0 - z[1];

@@ -35,28 +35,29 @@ void insert_code(Array *code, char *instr, size_t index) {
 
 void disp_code(Array *code) {
     int i;
-    printf("\nCODE:\n");
-    
-    while (code->array[i] != NULL) {
-        if (i == code->used) {
-            printf("%s", code->array[i]);
+    fprintf(stderr, "\nCODE:\n");
+        
+    for (i = 0; i < code->used; i++) {
+        if (code->array[i] != NULL) {
+            fprintf(stderr, "%d\t%s\n", i, code->array[i]);            
         }
         else {
-            printf("%s\n", code->array[i]);
+            fprintf(stderr, "%d\tNULL ; **ERROR** null statement\n", i);
+        }
+    }    
+}
+
+void write_code(FILE *fp, Array *code) {
+    int i = 0;
+    while (code->array[i] != NULL) {
+        if (i == code->used) {
+            fprintf(fp, "%s", code->array[i]);
+        }
+        else {
+            fprintf(fp, "%s\n", code->array[i]);
         }              
         i++;
     }
-    
-    /*
-    for (i = 0; i < code->used; i++) {
-        if (code->array[i] != NULL) {
-            printf("%d\t%s\n", i, code->array[i]);            
-        }
-        else {
-            printf("%d\tNULL ; **ERROR** null statement\n", i);
-        }
-    }
-    */
 }
 
 void free_code(Array *code) {

@@ -6,3 +6,6 @@ build: main.c scanner.l parser.yy symboltable.c symboltable.h ast.c ast.h genera
 
 clean:
 	rm -f core *.o lex.yy.c y.tab.c y.tab.h sgc sgc.exe
+
+cleangstal:
+	rm -f *.gstal

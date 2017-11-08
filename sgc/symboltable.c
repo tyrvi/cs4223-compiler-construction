@@ -52,21 +52,21 @@ symbol make_symbol(char *name, int datatype, int type, int addr, int size) {
 
 void disp_symbol(symbol s) {
 
-    printf("|%-12s|%-9s|%-6s|%-6d|%-6d|\n", s.name,
+    fprintf(stderr, "|%-12s|%-9s|%-6s|%-6d|%-6d|\n", s.name,
            s.datatype == 0 ? "INTEGER" : "REAL",
            s.type == 0 ? "SCALAR" : "ARRAY",
            s.size, s.addr);    
 }
 
 void disp_table() {
-    printf("+------+------------+---------+------+------+------+\n");
-    printf("|Pos   |name        |datatype |type  |size  |addr  |\n");
-    printf("+------+------------+---------+------+------+------+\n");
+    fprintf(stderr, "+------+------------+---------+------+------+------+\n");
+    fprintf(stderr, "|Pos   |name        |datatype |type  |size  |addr  |\n");
+    fprintf(stderr, "+------+------------+---------+------+------+------+\n");
     for (int i = 0; i < M; i++) {
         if (symboltable[i] != NULL) {
-            printf("|%-6d", i);
+            fprintf(stderr, "|%-6d", i);
             disp_symbol(*symboltable[i]);
-            printf("+------+------------+---------+------+------+------+\n");
+            fprintf(stderr, "+------+------------+---------+------+------+------+\n");
         }
     }
 }
