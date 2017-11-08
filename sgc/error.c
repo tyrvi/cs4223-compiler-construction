@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include "requires.h"
 #include "y.tab.h"
 #include "error.h"
 

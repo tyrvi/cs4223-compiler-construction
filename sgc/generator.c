@@ -1,6 +1,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "requires.h"
 #include "generator.h"
 #include "y.tab.h"
 #include "symboltable.h"

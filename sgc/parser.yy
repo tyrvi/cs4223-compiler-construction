@@ -12,6 +12,7 @@
 %{
     #include <stdio.h>
     #include <stdlib.h>
+    #include "requires.h"
     #include "error.h"
     
     int yylex(void);
@@ -19,7 +20,7 @@
     void yyerror(char *errmsg);   
     
 %}
-
+/*
 %code requires {
     #include "symboltable.h"
     #include "ast.h"
@@ -30,7 +31,7 @@
     int datatype;
     int addr;    
 }
-
+*/
 
 %union {
     char *sval;

@@ -553,9 +553,10 @@ char *yytext;
 */
 #line 13 "scanner.l"
     #define DEBUG 0
+    #include "requires.h"
     #include "y.tab.h"
-    #include <stdio.h>
-#line 559 "lex.yy.c"
+    #include <stdio.h>    
+#line 560 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -773,10 +774,10 @@ YY_DECL
 		}
 
 	{
-#line 18 "scanner.l"
+#line 19 "scanner.l"
 
 
-#line 780 "lex.yy.c"
+#line 781 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -835,7 +836,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 20 "scanner.l"
+#line 21 "scanner.l"
 {
                                                               if (DEBUG) printf("MAIN ");
                                                               return(MAIN);
@@ -843,7 +844,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 25 "scanner.l"
+#line 26 "scanner.l"
 {
                                                               if (DEBUG) printf("DATA ");
                                                               return(DATA);
@@ -851,7 +852,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 30 "scanner.l"
+#line 31 "scanner.l"
 {
                                                               if (DEBUG) printf("ALGORITHM ");
                                                               return(ALGORITHM);
@@ -859,7 +860,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 35 "scanner.l"
+#line 36 "scanner.l"
 {
                                                               if (DEBUG) printf("IF ");
                                                               return(IF);
@@ -867,7 +868,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 40 "scanner.l"
+#line 41 "scanner.l"
 {
                                                               if (DEBUG) printf("ELSE ");
                                                               return(ELSE);
@@ -875,7 +876,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 45 "scanner.l"
+#line 46 "scanner.l"
 {
                                                               if (DEBUG) printf("WHILE ");
                                                               return(WHILE);
@@ -883,7 +884,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 50 "scanner.l"
+#line 51 "scanner.l"
 {
                                                               if (DEBUG) printf("COUNTING ");
                                                               return(COUNTING);
@@ -891,7 +892,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 55 "scanner.l"
+#line 56 "scanner.l"
 {
                                                               if (DEBUG) printf("UPWARD ");
                                                               return(UPWARD);
@@ -899,7 +900,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 60 "scanner.l"
+#line 61 "scanner.l"
 {
                                                               if (DEBUG) printf("DOWNWARD ");
                                                               return(DOWNWARD);
@@ -907,7 +908,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 65 "scanner.l"
+#line 66 "scanner.l"
 {
                                                               if (DEBUG) printf("TO ");
                                                               return(TO);
@@ -915,7 +916,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 70 "scanner.l"
+#line 71 "scanner.l"
 {
                                                               if (DEBUG) printf("EXIT ");
                                                               return(EXIT);
@@ -923,7 +924,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 75 "scanner.l"
+#line 76 "scanner.l"
 {
                                                               if (DEBUG) printf("END ");
                                                               return(END);
@@ -931,7 +932,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 80 "scanner.l"
+#line 81 "scanner.l"
 {
                                                               if (DEBUG) printf("REAL ");
                                                               return(REAL);
@@ -939,7 +940,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 85 "scanner.l"
+#line 86 "scanner.l"
 {
                                                               if (DEBUG) printf("INTEGER ");
                                                               return(INTEGER);
@@ -947,7 +948,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 90 "scanner.l"
+#line 91 "scanner.l"
 {
                                                               if (DEBUG) printf("PRINT ");
                                                               return(PRINT);
@@ -955,7 +956,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 95 "scanner.l"
+#line 96 "scanner.l"
 {
                                                               if (DEBUG) printf("READ ");
                                                               return(READ);
@@ -963,7 +964,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 100 "scanner.l"
+#line 101 "scanner.l"
 {
                                                               if (DEBUG) printf("VARIABLE ");
                                                               yylval.sval = strdup(yytext);
@@ -972,7 +973,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 106 "scanner.l"
+#line 107 "scanner.l"
 {
                                                               if (DEBUG) printf("INT_CONST ");
                                                               yylval.ival = atoi(yytext);
@@ -981,7 +982,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 113 "scanner.l"
+#line 114 "scanner.l"
 {
                                                               if (DEBUG) printf("REAL_CONST ");
                                                               yylval.fval = atof(yytext);
@@ -991,7 +992,7 @@ YY_RULE_SETUP
 case 20:
 /* rule 20 can match eol */
 YY_RULE_SETUP
-#line 119 "scanner.l"
+#line 120 "scanner.l"
 {
                                                               if (DEBUG) printf("STRING ");
                                                               char *yycpy = yytext;
@@ -1006,7 +1007,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 131 "scanner.l"
+#line 132 "scanner.l"
 {
                                                               if (DEBUG) printf("COLON ");
                                                               return(COLON);
@@ -1014,7 +1015,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 136 "scanner.l"
+#line 137 "scanner.l"
 {
                                                               if (DEBUG) printf("ASSIGNMENT ");
                                                               return(ASSIGNMENT);
@@ -1022,7 +1023,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 141 "scanner.l"
+#line 142 "scanner.l"
 {
                                                               if (DEBUG) printf("AND ");
                                                               return(AND);
@@ -1030,7 +1031,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 146 "scanner.l"
+#line 147 "scanner.l"
 {
                                                               if (DEBUG) printf("OR ");
                                                               return(OR);
@@ -1038,7 +1039,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 151 "scanner.l"
+#line 152 "scanner.l"
 {
                                                               if (DEBUG) printf("NOT ");
                                                               return(NOT);
@@ -1046,7 +1047,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 156 "scanner.l"
+#line 157 "scanner.l"
 {
                                                               if (DEBUG) printf("LT ");
                                                               return(LT);
@@ -1054,7 +1055,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 161 "scanner.l"
+#line 162 "scanner.l"
 {
                                                               if (DEBUG) printf("LTE ");
                                                               return(LTE);
@@ -1062,7 +1063,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 166 "scanner.l"
+#line 167 "scanner.l"
 {
                                                               if (DEBUG) printf("GT ");
                                                               return(GT);
@@ -1070,7 +1071,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 171 "scanner.l"
+#line 172 "scanner.l"
 {
                                                               if (DEBUG) printf("GTE ");
                                                               return(GTE);
@@ -1078,7 +1079,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 176 "scanner.l"
+#line 177 "scanner.l"
 {
                                                               if (DEBUG) printf("EQ ");
                                                               return(EQ);
@@ -1086,7 +1087,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 181 "scanner.l"
+#line 182 "scanner.l"
 {
                                                               if (DEBUG) printf("NEQ ");
                                                               return(NEQ);
@@ -1094,7 +1095,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 186 "scanner.l"
+#line 187 "scanner.l"
 {
                                                               if (DEBUG) printf("ADD ");
                                                               return(ADD);
@@ -1102,7 +1103,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 191 "scanner.l"
+#line 192 "scanner.l"
 {
                                                               if (DEBUG) printf("SUB ");
                                                               return(SUB);
@@ -1110,7 +1111,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 196 "scanner.l"
+#line 197 "scanner.l"
 {
                                                               if (DEBUG) printf("MUL ");
                                                               return(MUL);
@@ -1118,7 +1119,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 201 "scanner.l"
+#line 202 "scanner.l"
 {
                                                               if (DEBUG) printf("DIV ");
                                                               return(DIV);
@@ -1126,7 +1127,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 206 "scanner.l"
+#line 207 "scanner.l"
 {
                                                               if (DEBUG) printf("MOD ");
                                                               return(MOD);
@@ -1134,7 +1135,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 211 "scanner.l"
+#line 212 "scanner.l"
 {
                                                               if (DEBUG) printf("LPAREN ");
                                                               return(LPAREN);
@@ -1142,7 +1143,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 216 "scanner.l"
+#line 217 "scanner.l"
 {
                                                               if (DEBUG) printf("RPAREN ");
                                                               return(RPAREN);
@@ -1150,7 +1151,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 221 "scanner.l"
+#line 222 "scanner.l"
 {
                                                               if (DEBUG) printf("LBRACKET ");
                                                               return(LBRACKET);
@@ -1158,7 +1159,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 226 "scanner.l"
+#line 227 "scanner.l"
 {
                                                               if (DEBUG) printf("RBRACKET ");
                                                               return(RBRACKET);
@@ -1166,7 +1167,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 231 "scanner.l"
+#line 232 "scanner.l"
 {
                                                               if (DEBUG) printf("END_STMT ");
                                                               return(END_STMT);
@@ -1174,7 +1175,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 236 "scanner.l"
+#line 237 "scanner.l"
 {
                                                               if (DEBUG) printf("BANG ");
                                                               return(BANG);
@@ -1182,7 +1183,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 241 "scanner.l"
+#line 242 "scanner.l"
 {
                                                               if (DEBUG) printf("COMMA ");
                                                               return(COMMA);
@@ -1191,7 +1192,7 @@ YY_RULE_SETUP
 case 44:
 /* rule 44 can match eol */
 YY_RULE_SETUP
-#line 246 "scanner.l"
+#line 247 "scanner.l"
 {
                                                               if (DEBUG) printf("NEWLINE ");
                                                               /*NEWLINE*/
@@ -1199,7 +1200,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 251 "scanner.l"
+#line 252 "scanner.l"
 {
                                                               if (DEBUG) printf("WHITESPACE ");
                                                               /*WHITESPACE*/
@@ -1207,7 +1208,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 256 "scanner.l"
+#line 257 "scanner.l"
 {
                                                               if (DEBUG) printf("COMMENT ");
                                                               /*COMMENT*/
@@ -1215,7 +1216,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 261 "scanner.l"
+#line 262 "scanner.l"
 {
                                                               if (DEBUG) printf("TRASH ");
                                                               /*TRASH*/
@@ -1224,10 +1225,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 267 "scanner.l"
+#line 268 "scanner.l"
 ECHO;
 	YY_BREAK
-#line 1231 "lex.yy.c"
+#line 1232 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2228,7 +2229,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 267 "scanner.l"
+#line 268 "scanner.l"
 
 
 
