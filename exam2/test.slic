@@ -13,20 +13,8 @@
 main;
 
     data:
-        integer: a, x, y, z;          # The 4-digit year adjusted for Zeller's congruence.
-        real: year, array[6];         # The month (1-12).
-    
+        real: a,b;
+        #integer: aa[1942], asdj;
     algorithm:
-		x := 1;
-		y := 0;
-		z := 1;
-        a := (~(1 & 0)) | 1;
-        year := -(x + 2.0);# + -1.0e-2;
-		print "a = ", a, !;
-        print "year = ", year, !;
-		array[1] := year;
-		array[2] := x - 3 + 2.0 - array[1];
-        print "array[1] = ", array[1], !;
-        print "array[2] = ", array[2], !;
    
 end main;

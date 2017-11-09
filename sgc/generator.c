@@ -10,8 +10,10 @@
 
 #define ADD_CODE(c, ...) { char *instr = malloc(sizeof(char *)*50); sprintf(instr, c, __VA_ARGS__); add_code(&code, instr); }
 #define ADD_UNARY(c) { char *instr = malloc(sizeof(char *)*50); sprintf(instr, c); add_code(&code, instr); }
-#define INSERT_CODE(c, offset, ...) { char *instr = malloc(sizeof(char *)*50); sprintf(instr, c, __VA_ARGS__); insert_code(&code, instr, offset); }
-#define INSERT_UNARY(c, offset) { char *instr = malloc(sizeof(char *)*50); sprintf(instr, c); insert_code(&code, instr, offset); }
+#define INSERT_CODE(c, index, ...) { char *instr = malloc(sizeof(char *)*50); sprintf(instr, c, __VA_ARGS__); insert_code(&code, instr, index); }
+#define INSERT_UNARY(c, index) { char *instr = malloc(sizeof(char *)*50); sprintf(instr, c); insert_code(&code, instr, index); }
+#define REPLACE_CODE(c, index, ...) { char *instr = malloc(sizeof(char *)*50); sprintf(instr, c, __VA_ARGS__); replace_code(&code, instr, index); }
+#define REPLACE_UNARY(c, index) { char *instr = malloc(sizeof(char *)*50); sprintf(instr, c); replace_code(&code, instr, index); }
 
 int code_gen(ast *root) {    
     ast *a;
@@ -78,6 +80,7 @@ int assign_gen(ast *a) {
         type = REAL_CONST;
         ADD_UNARY("ITF");
     }
+    
     ADD_UNARY("STO");
 
     return type;
@@ -131,7 +134,9 @@ int expr_gen(ast *a) {
             ADD_CODE("LLI %d", 0);
             ADD_UNARY("EQI");
         }
-        ADD_UNARY("NOP ; end not")
+        
+        ADD_UNARY("NOP ; end not");
+        
         return INT_CONST;
     }
     else if (a->nodetype == SUB && a->unary) {
@@ -144,7 +149,9 @@ int expr_gen(ast *a) {
         else {
             ADD_UNARY("NGI");
         }
-        ADD_UNARY("NOP ; end unary -")
+        
+        ADD_UNARY("NOP ; end unary -");
+        
         return type;
     }
 
@@ -174,6 +181,7 @@ int expr_gen(ast *a) {
         }
         
         int rtype = expr_gen(a->r);
+        
         if (rtype == REAL_CONST) {
             ADD_CODE("LLF %f", 0.0f);
             ADD_UNARY("NEF");
@@ -188,6 +196,7 @@ int expr_gen(ast *a) {
         ADD_CODE("LLI %d", 0);
         ADD_UNARY("NEI");
         ADD_UNARY("NOP ; end and");
+        
         return INT_CONST;            
     }
 
@@ -206,6 +215,7 @@ int expr_gen(ast *a) {
         }
         
         int rtype = expr_gen(a->r);
+        
         if (rtype == REAL_CONST) {
             ADD_CODE("LLF %f", 0.0f);
             ADD_UNARY("NEF");
@@ -227,17 +237,19 @@ int expr_gen(ast *a) {
     else {
         int ltype = expr_gen(a->l);
         size_t castindex = code.used;
+        ADD_UNARY("NOP ; replacement position"); // insertion placeholder
         int rtype = expr_gen(a->r);
         
         type = INT_TYPE;
         if (ltype == INT_CONST && rtype == REAL_CONST) {
-            INSERT_UNARY("ITF ; cast left op to real", castindex);
+            //INSERT_UNARY("ITF ; cast left op to real", castindex);
+            REPLACE_UNARY("ITF ; cast left op to real", castindex);
             type = REAL_TYPE;
-        }
+        }        
         else if (ltype == REAL_CONST && rtype == INT_CONST) {
             ADD_UNARY("ITF ; cast right op to real");
             type = REAL_TYPE;
-        }
+        }        
         else if (ltype == REAL_CONST && rtype == REAL_CONST) {
             type = REAL_TYPE;
         }
@@ -303,11 +315,12 @@ int mod_gen(ast *a) {
     symbol *divisor = search("_divisor");
 
     ADD_UNARY("NOP ; a mod b = a a b / b * -");
+    
     int ltype = expr_gen(a->l);
-    if (ltype == REAL_CONST) {
-        ADD_UNARY("FTI");
-    }
-
+    
+    if (ltype == REAL_CONST)
+        ADD_UNARY("FTI");        
+    
     // load a twice
     ADD_CODE("LAA %d", dividend->addr);
     ADD_UNARY("STM");
@@ -316,9 +329,9 @@ int mod_gen(ast *a) {
     ADD_UNARY("LOD");
 
     int rtype = expr_gen(a->r);
-    if (rtype == REAL_CONST) {
-        ADD_UNARY("FTI");
-    }
+    
+    if (rtype == REAL_CONST)
+        ADD_UNARY("FTI");    
 
     // load b
     ADD_CODE("LAA %d", divisor->addr);
@@ -347,6 +360,7 @@ void print_gen(ast *a) {
             ADD_CODE("LLI %d", bang);
             ADD_UNARY("PTC");
         }
+        
         else {
             if (expr_gen(printitem) == REAL_CONST) {
                 ADD_UNARY("PTF");

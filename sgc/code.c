@@ -20,6 +20,15 @@ void add_code(Array *code, char *instr) {
     code->array[code->used++] = instr;
 }
 
+void replace_code(Array *code, char *instr, size_t index) {
+    if (code->used == code->size) {
+        code->size *= 2;
+        code->array = (char **) realloc(code->array, code->size * sizeof(char *)*50);
+    }
+
+    code->array[index] = instr;
+}
+
 void insert_code(Array *code, char *instr, size_t index) {
     if (code->used == code->size) {
         code->size *= 2;
