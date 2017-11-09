@@ -1,0 +1,7 @@
+*.gstal
+*.slic
+*.o
+y.tab.h
+y.tab.c
+lex.yy.c
+sgc
