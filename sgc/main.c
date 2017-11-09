@@ -15,7 +15,8 @@ void usage(void);
 
 int main(int argc, char *argv[]) {
     extern FILE *yyin;
-    FILE *out;
+    FILE *outfile;
+    int out = 0;
     int debug = 0;
     
     if (argc < 2) {
@@ -33,8 +34,9 @@ int main(int argc, char *argv[]) {
                 debug = 1;
             
             else if (!strcmp(argv[i], "-o")) {
-                out = fopen(argv[i+1], "w");
+                outfile = fopen(argv[i+1], "w");
                 infile = argv[i+1];
+                out = 1;
                 i++;
             }
             
@@ -62,11 +64,11 @@ int main(int argc, char *argv[]) {
         }
         else {            
             if (!out)
-                out = fopen("a.gstal", "w");
+                outfile = fopen("a.gstal", "w");
             
-            write_code(out, &code);
+            write_code(outfile, &code);
 
-            fclose(out);
+            fclose(outfile);
             fclose(yyin);
         }
     }    
