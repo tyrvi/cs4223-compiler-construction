@@ -33,22 +33,13 @@ int code_gen(ast *root) {
     return 0;
 }
 
-void initialize() {
-    int max_addr = -1;
-
-    for (int i = 0; i < M; i++) {
-        if (symboltable[i] != NULL) {
-            if (symboltable[i]->addr > max_addr)
-                max_addr = symboltable[i]->addr;
-        }
-    }
-
-    insert("_dividend", INT_TYPE, SCALAR, max_addr+1, 1);
-    insert("_divisor", INT_TYPE, SCALAR, max_addr+2, 1);
+void initialize() {    
+    insert("_dividend", INT_TYPE, SCALAR, addr+1, 1);
+    insert("_divisor", INT_TYPE, SCALAR, addr+2, 1);
     
     init_code(&code, 512);
     // 2 addresses for mod operands dividend and divisor
-    ADD_CODE("ISP %d", max_addr+3);
+    ADD_CODE("ISP %d", addr+3);
 }
 
 int stmt_gen(ast *a) {

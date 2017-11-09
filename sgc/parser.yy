@@ -134,13 +134,13 @@ dataType        : INTEGER { datatype = INT_TYPE; }
                 ;
 
 variableList    : VARIABLE COMMA variableList
-                  {
+                  {                      
                       if (insert($1, datatype, SCALAR, addr, 1) == -1) {
                           duplicate_variable($1);
                           YYERROR;
                       }
                       else
-                          addr += 1;    
+                          addr += 1;                      
                   }
                 | VARIABLE LBRACKET INT_CONST RBRACKET COMMA variableList
                   {
@@ -166,12 +166,15 @@ variableList    : VARIABLE COMMA variableList
                   }
                 | VARIABLE LBRACKET INT_CONST RBRACKET
                   {
+                      printf("0 addr = %d\n", addr);
                       if (insert($1, datatype, ARRAY, addr, $3) == -1) {
                           duplicate_variable($1);
                           YYERROR;
                       }
                       else
                           addr += $3;
+
+                      printf("1 addr = %d\n", addr);
                   }
                 ;
 
@@ -396,3 +399,4 @@ constant        : INT_CONST
 %%
 
 int datatype = UNKOWN_TYPE;
+int addr = 0;

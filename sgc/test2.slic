@@ -1,7 +1,10 @@
 main;
 	data:
-		integer: a;
+		integer: a[50], b;
 	algorithm:
-		a := 123;
+        a[50] := 12;
+        a[0] := 1.2;
+        print "a[50]+3 = ", a[50] + 3, !;
+        print "a[0] = ", (43%12) % (18%5), !;
 
 end main;

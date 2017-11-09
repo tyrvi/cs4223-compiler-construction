@@ -13,7 +13,7 @@
     #define DEBUG 0
     #include "requires.h"
     #include "y.tab.h"
-    #include <stdio.h>    
+    #include <stdio.h>
 %}
 
 %%
@@ -247,6 +247,7 @@
 \n                                                        {
                                                               if (DEBUG) printf("NEWLINE ");
                                                               /*NEWLINE*/
+                                                              yylineno++;
                                                           }
 
 [\t ]+                                                    {

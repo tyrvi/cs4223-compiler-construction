@@ -15,7 +15,9 @@ void usage(void);
 
 int main(int argc, char *argv[]) {
     extern FILE *yyin;
-    FILE *outfile;
+    extern char *infile;
+    FILE *yyout;
+    char *outfile;
     int out = 0;
     int debug = 0;
     
@@ -34,15 +36,16 @@ int main(int argc, char *argv[]) {
                 debug = 1;
             
             else if (!strcmp(argv[i], "-o")) {
-                outfile = fopen(argv[i+1], "w");
-                infile = argv[i+1];
+                //yyout = fopen(argv[i+1], "w");
+                outfile = argv[i+1];
                 out = 1;
                 i++;
             }
-            
-            else if ((yyin = fopen(argv[i], "r")) == NULL) {
-                fprintf(stderr, "sgc: ERROR: no such file or directory %s\n", argv[i]);
-                return -1;
+            else {
+                if ((yyin = fopen(argv[i], "r")) == NULL) {
+                    fprintf(stderr, "sgc: ERROR: no such file or directory %s\n", argv[i]);
+                }
+                infile = argv[i];
             }
         }
     }
@@ -52,9 +55,12 @@ int main(int argc, char *argv[]) {
         return -1;
     }
 
-
-    if (yyparse())
-        fprintf(stderr, "Syntax error\n");
+    yylineno = 0;
+    // syntax error
+    if (yyparse()) {
+        return -1;
+    }
+    // parsing successful
     else {        
         code_gen(root);
                 
@@ -64,11 +70,13 @@ int main(int argc, char *argv[]) {
         }
         else {            
             if (!out)
-                outfile = fopen("a.gstal", "w");
+                yyout = fopen("a.gstal", "w");
+            else
+                yyout = fopen(outfile, "w");
             
-            write_code(outfile, &code);
+            write_code(yyout, &code);
 
-            fclose(outfile);
+            fclose(yyout);
             fclose(yyin);
         }
     }    

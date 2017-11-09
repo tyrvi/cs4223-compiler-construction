@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "symboltable.h"
 
+
 int insert(char *name, int datatype, int type, int addr, int size) {
     symbol *s;
     s = (symbol *) malloc(sizeof(symbol));
