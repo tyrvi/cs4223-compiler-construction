@@ -12,9 +12,9 @@
 
 main;
 
-    data:
+    data:        
         real: a,b;
-        #integer: aa[1942], asdj;
+        integer: aa[1942], asdj;
     algorithm:
-   
+            
 end main;
