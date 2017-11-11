@@ -103,10 +103,12 @@ int add_varref(ast *a) {
     ADD_CODE("LRA %d ; %s", a->s->addr, a->s->name);
 
     if (a->s->type == ARRAY) {
+        /*
         if (a->unary == NULL) {
-            invalid_array_ref(a->s->name);
+            invalid_var_ref(a->s->name, ARRAY);
             exit(1);
         }
+        */
         type = expr_gen(a->unary);
         if (type == REAL_CONST) {
             ADD_UNARY("FTI");

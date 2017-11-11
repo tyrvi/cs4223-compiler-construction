@@ -376,9 +376,13 @@ variable        : VARIABLE
                       symbol *s;
                       s = (symbol *) malloc(sizeof(symbol));
                       s = search($1);
-
+                      
                       if (!s) {
                           undeclared_variable($1);
+                          YYERROR;
+                      }
+                      if (s->type == ARRAY) {
+                          invalid_var_ref($1, SCALAR);
                           YYERROR;
                       }
 
@@ -391,9 +395,13 @@ variable        : VARIABLE
                       s = (symbol *) malloc(sizeof(symbol));
                       s = search($1);
 
-
+                      
                       if (!s) {
                           undeclared_variable($1);
+                          YYERROR;
+                      }
+                      if (s->type == SCALAR) {
+                          invalid_var_ref($1, ARRAY);
                           YYERROR;
                       }
 
