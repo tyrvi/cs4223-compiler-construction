@@ -63,7 +63,8 @@ void prgm() {
     algorithm();
     match(END);
     match(MAIN);
-    match(END_STMT);
+    match(END_STMT);    
+    match(0); // ensure no tokens after end main;
 }
 
 void data() {
