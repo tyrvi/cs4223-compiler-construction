@@ -6,6 +6,7 @@
 #include "y.tab.h"
 #include "symboltable.h"
 #include "code.h"
+#include "error.h"
 
 
 #define ADD_CODE(c, ...) { char *instr = malloc(sizeof(char *)*50); sprintf(instr, c, __VA_ARGS__); add_code(&code, instr); }
@@ -28,7 +29,7 @@ int code_gen(ast *root) {
         a = a->next;        
     }
 
-    ADD_UNARY("HLT ; end prgm");    
+    //ADD_UNARY("HLT ; end prgm");    
     
     return 0;
 }
@@ -52,9 +53,29 @@ int stmt_gen(ast *a) {
     case ASSIGNMENT:
         assign_gen(a);
         break;
+    case EXIT:
+        ADD_UNARY("HLT ; exit stmt");
+        break;
+    case READ:
+        read_gen(a);
+        break;
     }
 
     return 0;
+}
+
+int read_gen(ast *a) {
+    int type = add_varref(a->unary);
+    if (type == INT_CONST) {
+        ADD_UNARY("INI ; read stmt");
+    }
+    else {
+        ADD_UNARY("INF ; read stmt");
+    }
+
+    ADD_UNARY("STO");
+
+    return type;
 }
 
 int assign_gen(ast *a) {
@@ -78,10 +99,15 @@ int assign_gen(ast *a) {
 }
 
 int add_varref(ast *a) {
+    int type;
     ADD_CODE("LRA %d ; %s", a->s->addr, a->s->name);
 
     if (a->s->type == ARRAY) {
-        int type = expr_gen(a->unary);
+        if (a->unary == NULL) {
+            invalid_array_ref(a->s->name);
+            exit(1);
+        }
+        type = expr_gen(a->unary);
         if (type == REAL_CONST) {
             ADD_UNARY("FTI");
         }

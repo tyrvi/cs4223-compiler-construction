@@ -22,6 +22,12 @@ void invalid_array_size(char *var) {
     yyerror(errmsg);
 }
 
+void invalid_array_ref(char *var) {
+    char errmsg[100];
+    sprintf(errmsg, "invalid array reference '%s'", var);
+    yyerror(errmsg);
+}
+
 void yyerror(char *errmsg) {
     fprintf(stderr, "%s: ERROR: %s on line %d\n", infile, errmsg, yylineno);
 }

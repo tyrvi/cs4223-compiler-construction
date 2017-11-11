@@ -102,6 +102,8 @@
 %type <a> stmt
 %type <a> assignment
 %type <a> print
+%type <a> exit
+%type <a> read
 %type <a> printList
 %type <a> printItem
 %type <a> expr
@@ -166,15 +168,16 @@ variableList    : VARIABLE COMMA variableList
                   }
                 | VARIABLE LBRACKET INT_CONST RBRACKET
                   {
-                      printf("0 addr = %d\n", addr);
+                      if ($3 < 1) {
+                          invalid_array_size($1);
+                          YYERROR;
+                      }
                       if (insert($1, datatype, ARRAY, addr, $3) == -1) {
                           duplicate_variable($1);
                           YYERROR;
                       }
                       else
                           addr += $3;
-
-                      printf("1 addr = %d\n", addr);
                   }
                 ;
 
@@ -193,6 +196,8 @@ stmtList        : stmt END_STMT stmtList
 
 stmt            : assignment { $$ = $1; }
                 | print { $$ = $1; }
+                | exit { $$ = $1; }
+                | read { $$ = $1; }
                 ;
 
 print           : PRINT printList
@@ -214,6 +219,17 @@ printList       : printItem COMMA printList
 printItem       : expr { $$ = $1; }
                 | STRING { $$ = new_string($1); }
                 | BANG { $$ = new_ast(BANG); }
+                ;
+
+exit            : EXIT { $$ = new_ast(EXIT); }
+                ;
+
+read            : READ variable
+                  {
+                      ast *a = new_ast(READ);
+                      a->unary = $2;
+                      $$ = a;
+                  }
                 ;
 
 assignment      : variable ASSIGNMENT expr
