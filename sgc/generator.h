@@ -6,9 +6,12 @@
 
 extern int addr;
 
-int code_gen(ast *root);
+int begin_code_gen(ast *root);
+int code_gen(ast *a);
 void initialize(void);
 int stmt_gen(ast *a);
+int if_gen(ast *a);
+int else_gen(ast *a);
 void print_gen(ast *a);
 void pstring_gen(char *str);
 int assign_gen(ast *a);

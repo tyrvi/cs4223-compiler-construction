@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
     FILE *yyout;
     char *outfile;
     int out = 0;
-    int debug = 0;
+    int debug = 0;    
     
     if (argc < 2) {
         usage();
@@ -62,7 +62,7 @@ int main(int argc, char *argv[]) {
     }
     // parsing successful
     else {        
-        code_gen(root);
+        begin_code_gen(root);
                 
         if (debug) {
             disp_table(symboltable);

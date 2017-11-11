@@ -16,21 +16,17 @@
 #define REPLACE_CODE(c, index, ...) { char *instr = malloc(sizeof(char *)*50); sprintf(instr, c, __VA_ARGS__); replace_code(&code, instr, index); }
 #define REPLACE_UNARY(c, index) { char *instr = malloc(sizeof(char *)*50); sprintf(instr, c); replace_code(&code, instr, index); }
 
-int code_gen(ast *root) {    
+int begin_code_gen(ast *root) {
     ast *a;
     a = root;
     int num_stmts = 0;
 
     initialize();
 
-    while (a != NULL) {
-        num_stmts++;
-        stmt_gen(a);
-        a = a->next;        
-    }
+    code_gen(a);
 
-    //ADD_UNARY("HLT ; end prgm");    
-    
+    ADD_UNARY("HLT ; end prgm");
+
     return 0;
 }
 
@@ -41,6 +37,22 @@ void initialize() {
     init_code(&code, 512);
     // 2 addresses for mod operands dividend and divisor
     ADD_CODE("ISP %d", addr+3);
+}
+
+int code_gen(ast *a) {    
+    /* ast *a; */
+    /* a = root; */
+    /* int num_stmts = 0; */
+
+    /* initialize(); */
+
+    while (a != NULL) {
+        //num_stmts++;
+        stmt_gen(a);
+        a = a->next;        
+    }    
+    
+    return 0;
 }
 
 int stmt_gen(ast *a) {
@@ -59,10 +71,72 @@ int stmt_gen(ast *a) {
     case READ:
         read_gen(a);
         break;
+    case IF:
+        if_gen(a);
+        break;
+    case ELSE:
+        else_gen(a);
+        break;
     }
 
     return 0;
 }
+
+int else_gen(ast *a) {
+    ADD_UNARY("NOP ; begin if/else");
+    int type = expr_gen(a->unary);
+
+    if (type == REAL_CONST) {        
+        ADD_CODE("LLF %f", 0.0f);
+        ADD_UNARY("NEF");
+        //ADD_UNARY("FTI");
+    }
+    else {
+        ADD_CODE("LLI %d", 0);
+        ADD_UNARY("NEI");
+    }
+
+    size_t jpfindex = code.used;
+    ADD_UNARY("NOP ; jpf placeholder");
+    code_gen(a->l);
+    ADD_UNARY("NOP ; jmp placeholder")
+    int jpfloc = code.used + 1;
+    REPLACE_CODE("JPF %d", jpfindex, jpfloc);
+        
+    size_t jmpindex = code.used;
+    code_gen(a->r);
+    int jmploc = code.used;
+    REPLACE_CODE("JMP %d", jmpindex, jmploc);
+    ADD_UNARY("NOP ; end if/else");
+
+    return 0;    
+}
+
+int if_gen(ast *a) {
+    ADD_UNARY("NOP ; begin if stmt");
+    int type = expr_gen(a->unary);
+    
+    if (type == REAL_CONST) {        
+        ADD_CODE("LLF %f", 0.0f);
+        ADD_UNARY("NEF");
+        //ADD_UNARY("FTI");
+    }
+    else {
+        ADD_CODE("LLI %d", 0);
+        ADD_UNARY("NEI");
+    }
+    
+    size_t jpfindex = code.used;
+    ADD_UNARY("NOP ; jpf placeholder");
+    code_gen(a->l);
+    int jpfloc = code.used;
+    REPLACE_CODE("JPF %d", jpfindex, jpfloc);
+    ADD_UNARY("NOP ; end if stmt");
+
+    return 0;
+}
+
+
 
 int read_gen(ast *a) {
     int type = add_varref(a->unary);
@@ -147,7 +221,7 @@ int expr_gen(ast *a) {
         if (type  == REAL_CONST) {            
             ADD_CODE("LLF %f", 0.0f);
             ADD_UNARY("EQF");
-            ADD_UNARY("FTI");
+            //ADD_UNARY("FTI");
         }
         else {
             ADD_CODE("LLI %d", 0);
@@ -192,7 +266,7 @@ int expr_gen(ast *a) {
         if (ltype == REAL_CONST) {
             ADD_CODE("LLF %f", 0.0f);
             ADD_UNARY("NEF");
-            ADD_UNARY("FTI");
+            //ADD_UNARY("FTI");
         }
         else {
             ADD_CODE("LLI %d", 0);
@@ -204,7 +278,7 @@ int expr_gen(ast *a) {
         if (rtype == REAL_CONST) {
             ADD_CODE("LLF %f", 0.0f);
             ADD_UNARY("NEF");
-            ADD_UNARY("FTI");
+            //ADD_UNARY("FTI");
         }
         else {
             ADD_CODE("LLI %d", 0);
@@ -226,7 +300,7 @@ int expr_gen(ast *a) {
         if (ltype == REAL_CONST) {
             ADD_CODE("LLF %f", 0.0f);
             ADD_UNARY("NEF");
-            ADD_UNARY("FTI");
+            //ADD_UNARY("FTI");
         }
         else {
             ADD_CODE("LLI %d", 0);
@@ -238,7 +312,7 @@ int expr_gen(ast *a) {
         if (rtype == REAL_CONST) {
             ADD_CODE("LLF %f", 0.0f);
             ADD_UNARY("NEF");
-            ADD_UNARY("FTI");
+            //ADD_UNARY("FTI");
         }
         else {
             ADD_CODE("LLI %d", 0);

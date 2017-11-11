@@ -104,6 +104,8 @@
 %type <a> print
 %type <a> exit
 %type <a> read
+%type <a> loop
+%type <a> conditional
 %type <a> printList
 %type <a> printItem
 %type <a> expr
@@ -198,6 +200,34 @@ stmt            : assignment { $$ = $1; }
                 | print { $$ = $1; }
                 | exit { $$ = $1; }
                 | read { $$ = $1; }
+                | conditional { $$ = $1; }
+                | loop { $$ = $1; }
+                ;
+
+loop            : WHILE expr END_STMT stmtList END WHILE
+                  {
+                      ast *a = new_ast(WHILE);
+                      a->unary = $2;
+                      a->l = $4;
+                      $$ = a;
+                  }
+                ;
+
+conditional     : IF expr END_STMT stmtList END IF
+                  {
+                      ast *a = new_ast(IF);
+                      a->unary = $2;
+                      a->l = $4;
+                      $$ = a;
+                  }
+                | IF expr END_STMT stmtList ELSE END_STMT stmtList END IF
+                  {
+                      ast *a = new_ast(ELSE);
+                      a->unary = $2;
+                      a->l = $4;
+                      a->r = $7;
+                      $$ = a;
+                  }
                 ;
 
 print           : PRINT printList

@@ -40,5 +40,5 @@ void invalid_var_ref(char *var, int exptype) {
 }
 
 void yyerror(char *errmsg) {
-    fprintf(stderr, "%s: ERROR: %s on line %d\n", infile, errmsg, yylineno+1);
+    fprintf(stderr, "%s: ERROR: %s on line %d\n", infile, errmsg, yylineno);
 }
