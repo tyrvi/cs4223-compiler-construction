@@ -5,3 +5,6 @@ y.tab.h
 y.tab.c
 lex.yy.c
 *.zip
+sgc/#parser\.yy#
+
+sgc/\.#parser\.yy
