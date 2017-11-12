@@ -77,9 +77,38 @@ int stmt_gen(ast *a) {
     case ELSE:
         else_gen(a);
         break;
+    case WHILE:
+        while_gen(a);
+        break;
     }
 
     return 0;
+}
+
+int while_gen(ast *a) {
+    ADD_UNARY("NOP ; begin while");
+    //ADD_UNARY("NOP ; jmp placeholder");
+    int jmploc = code.used;
+    
+    int type = expr_gen(a->unary);
+    if (type == REAL_CONST) {        
+        ADD_CODE("LLF %f", 0.0f);
+        ADD_UNARY("NEF");
+        //ADD_UNARY("FTI");
+    }
+    else {
+        ADD_CODE("LLI %d", 0);
+        ADD_UNARY("NEI");
+    }
+    
+    size_t jpfindex = code.used;
+    ADD_UNARY("NOP ; jpf placeholder");
+    code_gen(a->l);
+    ADD_CODE("JMP %d", jmploc);
+    int jpfloc = code.used;
+    REPLACE_CODE("JPF %d", jpfindex, jpfloc);
+    ADD_UNARY("NOP ; end while");
+    
 }
 
 int else_gen(ast *a) {
@@ -103,7 +132,7 @@ int else_gen(ast *a) {
     int jpfloc = code.used + 1;
     REPLACE_CODE("JPF %d", jpfindex, jpfloc);
         
-    size_t jmpindex = code.used;
+    size_t jmpindex = code.used-1;
     code_gen(a->r);
     int jmploc = code.used;
     REPLACE_CODE("JMP %d", jmpindex, jmploc);
