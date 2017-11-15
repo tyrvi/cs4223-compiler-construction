@@ -26,6 +26,6 @@ ast* new_int(int val);
 ast* new_float(float val);
 ast* new_string(char *str);
 ast* new_var(symbol *s);
-void ast_free(ast *a);
+void free_ast(ast *a);
 
 #endif

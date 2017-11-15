@@ -29,14 +29,13 @@ int main(int argc, char *argv[]) {
         for (int i = 1; i < argc; i++) {
             if (!strcmp(argv[i], "-h")) {
                 usage();
-                return 0;
+                exit(0);
             }
             
             else if (!strcmp(argv[i], "-d"))
                 debug = 1;
             
             else if (!strcmp(argv[i], "-o")) {
-                //yyout = fopen(argv[i+1], "w");
                 outfile = argv[i+1];
                 out = 1;
                 i++;
@@ -44,6 +43,7 @@ int main(int argc, char *argv[]) {
             else {
                 if ((yyin = fopen(argv[i], "r")) == NULL) {
                     fprintf(stderr, "sgc: ERROR: no such file or directory %s\n", argv[i]);
+                    exit(1);
                 }
                 infile = argv[i];
             }
@@ -52,16 +52,14 @@ int main(int argc, char *argv[]) {
 
     if (!yyin) {
         fprintf(stderr, "sgc: ERROR: no input file\n");
-        return -1;
+        exit(1);
     }
 
     yylineno = 0;
-    // syntax error
-    if (yyparse()) {
-        return -1;
-    }
+    int result = yyparse();
+    
     // parsing successful
-    else {        
+    if (result == 0) {
         begin_code_gen(root);
                 
         if (debug) {
@@ -77,9 +75,49 @@ int main(int argc, char *argv[]) {
             write_code(yyout, &code);
 
             fclose(yyout);
-            fclose(yyin);
+            fclose(yyin);          
         }
-    }    
+
+        
+        free_code(&code);
+        free_ast(root);
+
+        exit(0);
+    }
+    // parsing failed
+    else {
+        if (root)
+            free_ast(root);
+        
+        exit(1);
+    }
+        
+    /* // syntax error */
+    /* if (yyparse()) { */
+    /*     return -1; */
+    /* } */
+    /* // parsing successful */
+    /* else {         */
+    /*     begin_code_gen(root); */
+                
+    /*     if (debug) { */
+    /*         disp_table(symboltable); */
+    /*         disp_code(&code); */
+    /*     } */
+    /*     else {             */
+    /*         if (!out) */
+    /*             yyout = fopen("a.gstal", "w"); */
+    /*         else */
+    /*             yyout = fopen(outfile, "w"); */
+            
+    /*         write_code(yyout, &code); */
+
+    /*         fclose(yyout); */
+    /*         fclose(yyin);           */
+    /*     } */
+
+    /*     free_code(&code); */
+    /* } */    
        
     return 0;
 }

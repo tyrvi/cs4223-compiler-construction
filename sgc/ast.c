@@ -47,8 +47,16 @@ ast* new_var(symbol *s) {
     return a;
 }
 
-void ast_free(ast *a) {
+void free_ast(ast *a) {
     if (a) {
-        free(a);
+
+        free_ast(a->l);
+        free_ast(a->r);
+        free_ast(a->next);
+
+        if (a->unary)
+            free_ast(a->unary);
+        
+        free(a);        
     }
 }
