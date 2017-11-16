@@ -8,6 +8,7 @@ extern char* yytext;
 extern int yylineno;    
 
 int datatype;
-int addr;    
+int addr;
+int loopnum;
 
 #endif

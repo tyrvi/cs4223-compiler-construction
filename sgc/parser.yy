@@ -1,14 +1,3 @@
-/*
-* ========================================================================
-* 
-* Thais Minet
-* CS 4223 Checkpoint #5
-* parser.yy
-* 10/3/17
-* 
-* ========================================================================
-*/
-
 %{
     #include <stdio.h>
     #include <stdlib.h>
@@ -20,18 +9,6 @@
     void yyerror(char *errmsg);   
     
 %}
-/*
-%code requires {
-    #include "symboltable.h"
-    #include "ast.h"
-
-    extern char* yytext;
-    extern int yylineno;    
-
-    int datatype;
-    int addr;    
-}
-*/
 
 %union {
     char *sval;
@@ -105,6 +82,7 @@
 %type <a> exit
 %type <a> read
 %type <a> loop
+%type <a> range
 %type <a> conditional
 %type <a> printList
 %type <a> printItem
@@ -152,6 +130,7 @@ variableList    : VARIABLE COMMA variableList
                           invalid_array_size($1);
                           YYERROR;
                       }
+                      
                       if (insert($1, datatype, ARRAY, addr, $3) == -1) {
                           duplicate_variable($1);
                           YYERROR;
@@ -174,6 +153,7 @@ variableList    : VARIABLE COMMA variableList
                           invalid_array_size($1);
                           YYERROR;
                       }
+                      
                       if (insert($1, datatype, ARRAY, addr, $3) == -1) {
                           duplicate_variable($1);
                           YYERROR;
@@ -209,6 +189,42 @@ loop            : WHILE expr END_STMT stmtList END WHILE
                       ast *a = new_ast(WHILE);
                       a->unary = $2;
                       a->l = $4;
+                      $$ = a;
+                  }
+                | COUNTING variable range END_STMT stmtList END COUNTING
+                  {
+                      if ($2->s->datatype == REAL_TYPE) {
+                          // error counting variable must be an integer
+                          invalid_var_type($2->s->name, INT_TYPE);
+                          YYERROR;
+                      }
+                      
+                      char loopname[100];
+                      sprintf(loopname, "_loop%d", loopnum);
+                      insert(loopname, INT_TYPE, SCALAR, addr, 1);
+                      addr++;
+                      loopnum++;
+                                                                  
+                      ast *a = new_ast(COUNTING);
+                      a->unary = $2; // variable
+                      a->l = $3; // range
+                      a->r = $5; // stmtList
+                      $$ = a;                                            
+                  }
+                ;
+
+range           : UPWARD expr TO expr
+                  {
+                      ast *a = new_ast(UPWARD);
+                      a->l = $2;
+                      a->r = $4;
+                      $$ = a;
+                  }
+                | DOWNWARD expr TO expr
+                  {
+                      ast *a = new_ast(DOWNWARD);
+                      a->l = $2;
+                      a->r = $4;
                       $$ = a;
                   }
                 ;
@@ -411,6 +427,7 @@ variable        : VARIABLE
                           undeclared_variable($1);
                           YYERROR;
                       }
+                      
                       if (s->type == ARRAY) {
                           invalid_var_ref($1, SCALAR);
                           YYERROR;
@@ -424,12 +441,12 @@ variable        : VARIABLE
                       symbol *s;
                       s = (symbol *) malloc(sizeof(symbol));
                       s = search($1);
-
                       
                       if (!s) {
                           undeclared_variable($1);
                           YYERROR;
                       }
+                      
                       if (s->type == SCALAR) {
                           invalid_var_ref($1, ARRAY);
                           YYERROR;
@@ -454,3 +471,4 @@ constant        : INT_CONST
 
 int datatype = UNKOWN_TYPE;
 int addr = 0;
+int loopnum = 0;

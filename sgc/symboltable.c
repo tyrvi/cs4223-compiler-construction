@@ -16,7 +16,7 @@ symbol* search(char *name) {
     int i = 0;
     unsigned long h = hash(name, M);
 
-    while (symboltable[(h+i)%M] != NULL) {
+    while (symboltable[(h+i)%M] != NULL && i <= M) {
         if (!strcmp(symboltable[(h+i)%M]->name, name)) {
             return symboltable[(h+i)%M];
         }

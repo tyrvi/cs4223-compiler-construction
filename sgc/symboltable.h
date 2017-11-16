@@ -2,7 +2,7 @@
 #define SYMBOLTABLE_H_
 
 #define BASE (64) // hash base should be larger than number symbols allowed in a variable
-#define M (1031) // hash value
+#define M (1031) // hash value find way to increase size of hash array
 
 #define INT_TYPE 0
 #define REAL_TYPE 1

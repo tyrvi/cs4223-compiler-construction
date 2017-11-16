@@ -1,0 +1,43 @@
+main;
+
+    data:
+        integer: a, x, y, z;          # The 4-digit year adjusted for Zeller's congruence.
+        real: year, array[6];         # The month (1-12).
+    
+    algorithm:
+		x := 0;
+		y := 0;
+		z := 0;
+        print "start x = ", x, " y = ", y, " z = ", z, !;
+
+        counting x upward 0 to 9;
+                 counting y upward 0 to 9;
+                          if y % 2 = 0;
+                             z := z + 1;
+                          end if;
+                 end counting;
+        end counting;
+
+        print !, "end x = ", x, " y = ", y, " z = ", z, !;
+        #print "x = ", x, !;
+        #print "y = ", y, !;
+        
+        #a := (~(1 & 0)) | 0;
+        #year := -(x + 2.0);# + -1.0e-2;
+        #if a;
+        #   print "year = ", year, !;
+        #else;
+        #   print "a = ", a, !;
+        #end if;
+
+        #while y < 10;
+        #      x := x + 1;
+        #      y := y + 1;
+        #end while;
+        #print "x = ", x, !;
+		#array[1] := year;
+		#array[2] := x - 3 + 2.0 - array[1];
+        #print "array[1] = ", array[1], !;
+        #print "array[2] = ", array[2], !;
+   
+end main;

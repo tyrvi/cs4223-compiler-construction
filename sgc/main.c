@@ -18,12 +18,13 @@ int main(int argc, char *argv[]) {
     extern char *infile;
     FILE *yyout;
     char *outfile;
+    int in = 0;
     int out = 0;
     int debug = 0;    
     
     if (argc < 2) {
         usage();
-        return 0;
+        exit(0);
     }
     else {
         for (int i = 1; i < argc; i++) {
@@ -40,26 +41,27 @@ int main(int argc, char *argv[]) {
                 out = 1;
                 i++;
             }
+            
             else {
                 if ((yyin = fopen(argv[i], "r")) == NULL) {
                     fprintf(stderr, "sgc: ERROR: no such file or directory %s\n", argv[i]);
                     exit(1);
                 }
+                in = 1;
                 infile = argv[i];
             }
         }
     }
 
-    if (!yyin) {
+    if (!in) {
         fprintf(stderr, "sgc: ERROR: no input file\n");
         exit(1);
     }
 
     yylineno = 0;
-    int result = yyparse();
     
     // parsing successful
-    if (result == 0) {
+    if (!yyparse()) {
         begin_code_gen(root);
                 
         if (debug) {
@@ -81,7 +83,7 @@ int main(int argc, char *argv[]) {
         
         free_code(&code);
         free_ast(root);
-
+        
         exit(0);
     }
     // parsing failed
@@ -91,33 +93,6 @@ int main(int argc, char *argv[]) {
         
         exit(1);
     }
-        
-    /* // syntax error */
-    /* if (yyparse()) { */
-    /*     return -1; */
-    /* } */
-    /* // parsing successful */
-    /* else {         */
-    /*     begin_code_gen(root); */
-                
-    /*     if (debug) { */
-    /*         disp_table(symboltable); */
-    /*         disp_code(&code); */
-    /*     } */
-    /*     else {             */
-    /*         if (!out) */
-    /*             yyout = fopen("a.gstal", "w"); */
-    /*         else */
-    /*             yyout = fopen(outfile, "w"); */
-            
-    /*         write_code(yyout, &code); */
-
-    /*         fclose(yyout); */
-    /*         fclose(yyin);           */
-    /*     } */
-
-    /*     free_code(&code); */
-    /* } */    
        
     return 0;
 }

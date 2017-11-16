@@ -8,18 +8,19 @@
 #include "code.h"
 #include "error.h"
 
-
 #define ADD_CODE(c, ...) { char *instr = malloc(sizeof(char *)*50); sprintf(instr, c, __VA_ARGS__); add_code(&code, instr); }
 #define ADD_UNARY(c) { char *instr = malloc(sizeof(char *)*50); sprintf(instr, c); add_code(&code, instr); }
-#define INSERT_CODE(c, index, ...) { char *instr = malloc(sizeof(char *)*50); sprintf(instr, c, __VA_ARGS__); insert_code(&code, instr, index); }
-#define INSERT_UNARY(c, index) { char *instr = malloc(sizeof(char *)*50); sprintf(instr, c); insert_code(&code, instr, index); }
+//#define INSERT_CODE(c, index, ...) { char *instr = malloc(sizeof(char *)*50); sprintf(instr, c, __VA_ARGS__); insert_code(&code, instr, index); }
+//#define INSERT_UNARY(c, index) { char *instr = malloc(sizeof(char *)*50); sprintf(instr, c); insert_code(&code, instr, index); }
 #define REPLACE_CODE(c, index, ...) { char *instr = malloc(sizeof(char *)*50); sprintf(instr, c, __VA_ARGS__); replace_code(&code, instr, index); }
 #define REPLACE_UNARY(c, index) { char *instr = malloc(sizeof(char *)*50); sprintf(instr, c); replace_code(&code, instr, index); }
 
+// tracks synthesized loop variables
+int loopcount = 0;
+
 int begin_code_gen(ast *root) {
     ast *a;
-    a = root;
-    int num_stmts = 0;
+    a = root;    
 
     initialize();
 
@@ -31,23 +32,17 @@ int begin_code_gen(ast *root) {
 }
 
 void initialize() {    
-    insert("_dividend", INT_TYPE, SCALAR, addr+1, 1);
-    insert("_divisor", INT_TYPE, SCALAR, addr+2, 1);
+    insert("_dividend", INT_TYPE, SCALAR, addr, 1);
+    insert("_divisor", INT_TYPE, SCALAR, addr+1, 1);
     
     init_code(&code, 512);
     // 2 addresses for mod operands dividend and divisor
     ADD_CODE("ISP %d", addr+3);
 }
 
-int code_gen(ast *a) {    
-    /* ast *a; */
-    /* a = root; */
-    /* int num_stmts = 0; */
-
-    /* initialize(); */
+int code_gen(ast *a) {
 
     while (a != NULL) {
-        //num_stmts++;
         stmt_gen(a);
         a = a->next;        
     }    
@@ -80,21 +75,97 @@ int stmt_gen(ast *a) {
     case WHILE:
         while_gen(a);
         break;
+    case COUNTING:
+        counting_gen(a);
+        loopcount++;
+        break;    
     }
 
     return 0;
 }
 
+int counting_gen(ast *a) {
+    // load, evaluate and store counting variable
+    ADD_UNARY("NOP ; initialize counting");
+    add_varref(a->unary);
+    expr_gen(a->l->l);
+    ADD_UNARY("STO");
+
+    // load, evaluate and store synthesized loop variable
+    char loopname[100];
+    sprintf(loopname, "_loop%d", loopcount);
+    symbol *s = search(loopname);
+
+    // loop variables were not synthesized correctly
+    if (s == NULL) {
+        fprintf(stderr, "sgc: ERROR: internal compiler error");
+        exit(1);
+    }
+
+    ADD_CODE("LRA %d ; %s", s->addr, s->name);
+    expr_gen(a->l->r);
+    ADD_UNARY("STO");
+
+    ADD_UNARY("NOP ; begin counting");
+
+    // load variables and compare
+    // store jmp location
+    int jmploc = code.used;
+    add_varref(a->unary);
+    ADD_UNARY("LOD");
+
+    ADD_CODE("LRA %d ; %s", s->addr, s->name);
+    ADD_UNARY("LOD");
+    // upward loop
+    if (a->l->nodetype == UPWARD) {
+        ADD_UNARY("LEI");
+    }
+    // downward loop
+    else {
+        ADD_UNARY("GEI");
+    }
+
+    size_t jpfindex = code.used;
+    ADD_UNARY("NOP ; jpf placeholder");
+    code_gen(a->r);
+
+    ADD_UNARY("NOP ; increment loop variable");
+    // upward loop
+    if (a->l->nodetype == UPWARD) {
+        add_varref(a->unary);
+        add_varref(a->unary);
+        ADD_UNARY("LOD");
+        ADD_CODE("LLI %d", 1);
+        ADD_UNARY("ADI");
+        ADD_UNARY("STO");
+    }
+    // downward loop
+    else {
+        add_varref(a->unary);
+        add_varref(a->unary);
+        ADD_UNARY("LOD");
+        ADD_CODE("LLI %d", -1);
+        ADD_UNARY("ADI");
+        ADD_UNARY("STO");
+    }
+    
+    ADD_CODE("JMP %d", jmploc);
+    int jpfloc = code.used;
+    REPLACE_CODE("JPF %d", jpfindex, jpfloc);
+    ADD_UNARY("NOP ; end counting");
+    
+    return 0;
+}
+
 int while_gen(ast *a) {
     ADD_UNARY("NOP ; begin while");
-    //ADD_UNARY("NOP ; jmp placeholder");
     int jmploc = code.used;
-    
     int type = expr_gen(a->unary);
+
+    // convert to boolean value
     if (type == REAL_CONST) {        
         ADD_CODE("LLF %f", 0.0f);
         ADD_UNARY("NEF");
-        //ADD_UNARY("FTI");
     }
     else {
         ADD_CODE("LLI %d", 0);
@@ -108,30 +179,33 @@ int while_gen(ast *a) {
     int jpfloc = code.used;
     REPLACE_CODE("JPF %d", jpfindex, jpfloc);
     ADD_UNARY("NOP ; end while");
-    
+
+    return 0;
 }
 
 int else_gen(ast *a) {
     ADD_UNARY("NOP ; begin if/else");
     int type = expr_gen(a->unary);
 
+    // convert to boolean value
     if (type == REAL_CONST) {        
         ADD_CODE("LLF %f", 0.0f);
         ADD_UNARY("NEF");
-        //ADD_UNARY("FTI");
     }
     else {
         ADD_CODE("LLI %d", 0);
         ADD_UNARY("NEI");
     }
 
+    // if
     size_t jpfindex = code.used;
     ADD_UNARY("NOP ; jpf placeholder");
     code_gen(a->l);
     ADD_UNARY("NOP ; jmp placeholder")
     int jpfloc = code.used + 1;
     REPLACE_CODE("JPF %d", jpfindex, jpfloc);
-        
+
+    // else
     size_t jmpindex = code.used-1;
     code_gen(a->r);
     int jmploc = code.used;
@@ -148,7 +222,6 @@ int if_gen(ast *a) {
     if (type == REAL_CONST) {        
         ADD_CODE("LLF %f", 0.0f);
         ADD_UNARY("NEF");
-        //ADD_UNARY("FTI");
     }
     else {
         ADD_CODE("LLI %d", 0);
@@ -164,8 +237,6 @@ int if_gen(ast *a) {
 
     return 0;
 }
-
-
 
 int read_gen(ast *a) {
     int type = add_varref(a->unary);
@@ -187,6 +258,7 @@ int assign_gen(ast *a) {
     int ltype = add_varref(a->l);
     int rtype = expr_gen(a->r);
 
+    // casting
     if (ltype == INT_CONST && rtype == REAL_CONST) {
         type = INT_CONST;
         ADD_UNARY("FTI");
@@ -206,12 +278,6 @@ int add_varref(ast *a) {
     ADD_CODE("LRA %d ; %s", a->s->addr, a->s->name);
 
     if (a->s->type == ARRAY) {
-        /*
-        if (a->unary == NULL) {
-            invalid_var_ref(a->s->name, ARRAY);
-            exit(1);
-        }
-        */
         type = expr_gen(a->unary);
         if (type == REAL_CONST) {
             ADD_UNARY("FTI");
@@ -231,26 +297,26 @@ int expr_gen(ast *a) {
         ADD_CODE("LLI %d", a->n);
         
         return INT_CONST;
-    }
+    }    
     else if (a->nodetype == REAL_CONST){
         ADD_CODE("LLF %f", a->f);
         
         return REAL_CONST;
-    }
+    }    
     else if (a->nodetype == VARIABLE) {
         type = add_varref(a);
         ADD_UNARY("LOD");
         
         return type;
-    }
+    }    
     else if (a->nodetype == NOT) {
         ADD_UNARY("NOP ; begin not");
         type = expr_gen(a->unary);
 
+        // convert to boolean value
         if (type  == REAL_CONST) {            
             ADD_CODE("LLF %f", 0.0f);
             ADD_UNARY("EQF");
-            //ADD_UNARY("FTI");
         }
         else {
             ADD_CODE("LLI %d", 0);
@@ -260,7 +326,7 @@ int expr_gen(ast *a) {
         ADD_UNARY("NOP ; end not");
         
         return INT_CONST;
-    }
+    }    
     else if (a->nodetype == SUB && a->unary) {
         ADD_UNARY("NOP ; begin unary -");
         type = expr_gen(a->unary);
@@ -275,27 +341,24 @@ int expr_gen(ast *a) {
         ADD_UNARY("NOP ; end unary -");
         
         return type;
-    }
-
+    }    
     else if (a->nodetype == ADD && a->unary) {
         ADD_UNARY("NOP ; unary +");
         type = expr_gen(a->unary);
 
         return type;
     }
-
     else if (a->nodetype == MOD) {
         return mod_gen(a);
-    }
-    
+    }    
     else if (a->nodetype == AND) {
         int ltype = expr_gen(a->l);
         
         ADD_UNARY("NOP ; begin and");
+        // convert to boolean value
         if (ltype == REAL_CONST) {
             ADD_CODE("LLF %f", 0.0f);
             ADD_UNARY("NEF");
-            //ADD_UNARY("FTI");
         }
         else {
             ADD_CODE("LLI %d", 0);
@@ -303,11 +366,10 @@ int expr_gen(ast *a) {
         }
         
         int rtype = expr_gen(a->r);
-        
+        // convert to boolean value
         if (rtype == REAL_CONST) {
             ADD_CODE("LLF %f", 0.0f);
             ADD_UNARY("NEF");
-            //ADD_UNARY("FTI");
         }
         else {
             ADD_CODE("LLI %d", 0);
@@ -321,15 +383,14 @@ int expr_gen(ast *a) {
         
         return INT_CONST;            
     }
-
     else if (a->nodetype == OR) {
         ADD_UNARY("NOP ; begin or");
         int ltype = expr_gen(a->l);
-        
+
+        // convert to boolean value
         if (ltype == REAL_CONST) {
             ADD_CODE("LLF %f", 0.0f);
             ADD_UNARY("NEF");
-            //ADD_UNARY("FTI");
         }
         else {
             ADD_CODE("LLI %d", 0);
@@ -337,11 +398,10 @@ int expr_gen(ast *a) {
         }
         
         int rtype = expr_gen(a->r);
-        
+        // convert to boolean value
         if (rtype == REAL_CONST) {
             ADD_CODE("LLF %f", 0.0f);
             ADD_UNARY("NEF");
-            //ADD_UNARY("FTI");
         }
         else {
             ADD_CODE("LLI %d", 0);
@@ -354,8 +414,7 @@ int expr_gen(ast *a) {
         ADD_UNARY("NOP ; end and");
 
         return INT_CONST;            
-    }
-    
+    }    
     else {
         int ltype = expr_gen(a->l);
         size_t castindex = code.used;
@@ -363,8 +422,7 @@ int expr_gen(ast *a) {
         int rtype = expr_gen(a->r);
         
         type = INT_TYPE;
-        if (ltype == INT_CONST && rtype == REAL_CONST) {
-            //INSERT_UNARY("ITF ; cast left op to real", castindex);
+        if (ltype == INT_CONST && rtype == REAL_CONST) {            
             REPLACE_UNARY("ITF ; cast left op to real", castindex);
             type = REAL_TYPE;
         }        
@@ -481,8 +539,7 @@ void print_gen(ast *a) {
             char bang = '\n';
             ADD_CODE("LLI %d", bang);
             ADD_UNARY("PTC");
-        }
-        
+        }        
         else {
             if (expr_gen(printitem) == REAL_CONST) {
                 ADD_UNARY("PTF");

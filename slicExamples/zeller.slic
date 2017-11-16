@@ -17,7 +17,7 @@ main;
    data:
 
       integer: year, month, day, m;
-      integer: m, y, c;
+      integer: y, c;
       integer: temp, weekday;
 
    algorithm:

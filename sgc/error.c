@@ -23,10 +23,28 @@ void invalid_array_size(char *var) {
     yyerror(errmsg);
 }
 
+void invalid_var_type(char *var, int exptype) {
+    char errmsg[100];
+    char *exp;
+    char *ref;
+    
+    if (exptype == REAL_TYPE) {
+        exp = "REAL";
+        ref = "INTEGER";            
+    }
+    else {
+        exp = "INTEGER";
+        ref = "REAL";
+    }
+    sprintf(errmsg, "invalid variable type '%s' expected %s recieved %s", var, exp, ref);
+    yyerror(errmsg);
+}
+
 void invalid_var_ref(char *var, int exptype) {
     char errmsg[100];
     char *exp;
     char *ref;
+    
     if (exptype == ARRAY) {
         exp = "ARRAY";
         ref = "SCALAR";
