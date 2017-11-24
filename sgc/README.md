@@ -8,6 +8,7 @@ Requirements: make, gcc, flex, bison
 
 * Linux - `make`
 * Mac OSX - `make osx`
+
 In addition to building for Linux and OSX the make file contains 2 additional commands `make clean` which will remove all files created by make and `make cleangstal` which will remove all files with the `.gstal` extension. The only difference in installation between OSX and Linux is that OSX requires the flag `-ll` for gcc while Linux requires `-lfl`
 
 ## Usage
