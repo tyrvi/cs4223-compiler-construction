@@ -99,11 +99,11 @@ int main(int argc, char *argv[]) {
 
 void usage() {
     printf("sgc - slic to gstal compiler\n");
-    printf("Usage: sgc [options] file\n");
+    printf("Usage: sgc [options] infile\n");
     printf("Options:\n");
     printf("%s-h%-12sDisplay this information\n", "  ", " ");
     printf("%s-d%-12sPrint symbol table and gstal to stdout\n", "  ", " ");
-    printf("%s-o <file>%-5sPlace gstal output in <file>\n", "  ", " ");
+    printf("%s-o <outfile>%-5sWrites gstal output to <outfile>\n", "  ", " ");
     printf("\nSee README for more information\n\n");
 }
 

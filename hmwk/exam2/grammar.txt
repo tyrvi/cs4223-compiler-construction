@@ -1,0 +1,39 @@
+/*
+* ========================================================================
+* 
+* Thais Minet
+* 11/8/17
+* CS 4223 Exam #2
+* main.c
+* 
+* ========================================================================
+*/
+
+prgm            : MAIN END_STMT data algorithm END MAIN END_STMT
+                ;
+
+// data section
+data            : DATA COLON declarationlist
+                | DATA COLON
+                ;
+                
+declarationlist : declaration END_STMT declarationlist
+                | declaration END_STMT
+                ;
+
+declaration     : datatype COLON variablelist
+                ;
+
+datatype        : INTEGER
+                | REAL
+                ;
+
+variablelist    : VARIABLE COMMA variablelist
+                | VARIABLE LBRACKET INT_CONST RBRACKET COMMA variablelist
+                | VARIABLE
+                | VARIABLE LBRACKET INT_CONST RBRACKET
+                ;
+
+// algorithm section
+algorithm       : ALGORITHM COLON
+                ;
