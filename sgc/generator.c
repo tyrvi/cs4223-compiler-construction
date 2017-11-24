@@ -76,8 +76,7 @@ int stmt_gen(ast *a) {
         while_gen(a);
         break;
     case COUNTING:
-        counting_gen(a);
-        loopcount++;
+        counting_gen(a);        
         break;    
     }
 
@@ -101,6 +100,8 @@ int counting_gen(ast *a) {
         fprintf(stderr, "sgc: ERROR: internal compiler error");
         exit(1);
     }
+
+    loopcount++;
 
     ADD_CODE("LRA %d ; %s", s->addr, s->name);
     expr_gen(a->l->r);
