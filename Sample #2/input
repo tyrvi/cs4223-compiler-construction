@@ -1,4 +1,0 @@
-a & b
-a & (b | c)
-(a & b) | ~(b & ~c)
-fido & bowser |(fido & bowser & rex & lassie)
