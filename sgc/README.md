@@ -13,6 +13,7 @@ In addition to building for Linux and OSX the make file contains 2 additional co
 
 ## Usage
 sgc [-h] [-o outfile] [-d] infile
-* `-h` displays usage information and exits without any compilation
-* `-d` prints the symbol table and compiled gstal to stdout. Will not output to file specified with -o
-* `-o outfile` specify a file to output the gstal to if not included defaults to a.gstal. It is recommended to name your files with the .gstal exstension although not required.
+* `-h` displays usage information and exits.
+* `-d` prints the symbol table and compiled gstal to stdout. When this option is selected nothing will be written to any output file even if the `-o` option is used
+.
+* `-o outfile` specify a file to output the gstal to if not included defaults to `a.gstal`. It is recommended to name your files with the .gstal exstension although not required.

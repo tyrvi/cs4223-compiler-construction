@@ -556,6 +556,9 @@ void print_gen(ast *a) {
 
 void pstring_gen(char *str) {    
     for ( ; *str != '\0'; str++) {
+        if (*str == '"')
+            str++;
+        
         ADD_CODE("LLI %d", *str);
         ADD_UNARY("PTC");
     }

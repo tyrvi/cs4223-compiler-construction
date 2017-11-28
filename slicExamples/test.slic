@@ -5,14 +5,6 @@ main;
         real: year, array[6];         # The month (1-12).
     
     algorithm:
-        counting x downward 9 to 1;
-                 print "x = ", x, !;
-                 counting y upward 1 to x;
-                          print "y = ", y, !;
-                 end counting;
-        end counting;
-
-        print "end x = ", x, !;
-        print "end y = ", y, !;
+        print "this is a """"quote""""! ", !;
    
 end main;
