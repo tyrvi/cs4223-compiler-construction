@@ -1,5 +1,6 @@
 # SGC - Slic to GSTAL Compiler
 **Implemented by Thais Minet**
+* Run on cygwin
 
 A compiler for the Slic (Simple Language for an Instructional Compiler) language that compiles to 
 GSTAL (Georgetown Stack Assembly Language). In order to run the output of SGC you will need to have
