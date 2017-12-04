@@ -1,3 +1,9 @@
+/*
+*  Thais Minet
+*  CS 4223
+*  ast.h
+*/
+
 #ifndef AST_H_
 #define AST_H_
 

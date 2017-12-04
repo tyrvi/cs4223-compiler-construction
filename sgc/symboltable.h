@@ -1,3 +1,9 @@
+/*
+*  Thais Minet
+*  CS 4223
+*  symboltable.h
+*/
+
 #ifndef SYMBOLTABLE_H_
 #define SYMBOLTABLE_H_
 

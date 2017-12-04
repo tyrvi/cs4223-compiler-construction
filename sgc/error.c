@@ -1,3 +1,9 @@
+/*
+*  Thais Minet
+*  CS 4223
+*  error.c
+*/
+
 #include <stdio.h>
 #include <string.h>
 #include "requires.h"

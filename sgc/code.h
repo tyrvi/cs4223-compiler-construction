@@ -1,3 +1,9 @@
+/*
+*  Thais Minet
+*  CS 4223
+*  code.h
+*/
+
 #ifndef CODE_H_
 #define CODE_H_
 

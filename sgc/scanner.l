@@ -1,3 +1,9 @@
+/*
+*  Thais Minet
+*  CS 4223
+*  scanner.l
+*/
+
 %{
     #define DEBUG 0
     #include "requires.h"

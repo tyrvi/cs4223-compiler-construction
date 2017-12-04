@@ -1,3 +1,9 @@
+/*
+*  Thais Minet
+*  CS 4223
+*  parser.yy
+*/
+
 %{
     #include <stdio.h>
     #include <stdlib.h>

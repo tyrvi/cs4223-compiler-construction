@@ -1,3 +1,9 @@
+/*
+*  Thais Minet
+*  CS 4223
+*  generator.h
+*/
+
 #ifndef GENERATOR_H_
 #define GENERATOR_H_
 

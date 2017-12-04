@@ -1,3 +1,9 @@
+/*
+*  Thais Minet
+*  CS 4223
+*  generator.c
+*/
+
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>

@@ -1,3 +1,10 @@
+/*
+*  Thais Minet
+*  CS 4223
+*  ast.c
+*/
+
+
 #include <stdlib.h>
 #include <stdio.h>
 #include "requires.h"

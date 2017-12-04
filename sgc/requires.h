@@ -1,3 +1,9 @@
+/*
+*  Thais Minet
+*  CS 4223
+*  requires.h
+*/
+
 #ifndef REQUIRES_H_
 #define REQUIRES_H_
 

@@ -2,6 +2,7 @@
 A compiler for the Slic (Simple Language for an Instructional Compiler) language that compiles to 
 GSTAL (Georgetown Stack Assembly Language). In order to run the output of SGC you will need to have
 access to a GSTAL interpreter.
+**Implemented by Thais Minet**
  
 ## Installation
 Requirements: make, gcc, flex, bison

@@ -1,3 +1,9 @@
+/*
+*  Thais Minet
+*  CS 4223
+*  main.c
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

@@ -1,3 +1,9 @@
+/*
+*  Thais Minet
+*  CS 4223
+*  code.c
+*/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include "requires.h"

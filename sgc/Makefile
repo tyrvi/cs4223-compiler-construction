@@ -1,3 +1,7 @@
+# Thais Minet
+# CS 4223
+# Slic Compiler
+
 build: main.c scanner.l parser.yy symboltable.c symboltable.h ast.c ast.h generator.c generator.h code.c code.h error.c error.h requires.h
 	flex scanner.l
 	bison -y -d parser.yy

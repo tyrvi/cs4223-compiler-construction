@@ -1,3 +1,9 @@
+/*
+*  Thais Minet
+*  CS 4223
+*  error.h
+*/
+
 #ifndef ERROR_H_
 #define ERROR_H_
 
