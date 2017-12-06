@@ -1,10 +1,10 @@
 main;
 
     data:
-        integer: a, x, y, z;          # The 4-digit year adjusted for Zeller's congruence.
-        real: year, array[6];         # The month (1-12).
+        integer: x;
     
     algorithm:
-        print "this is a """"quote""""! ", !;
+        x := ~10 & ~9;
+        print x;
    
 end main;
