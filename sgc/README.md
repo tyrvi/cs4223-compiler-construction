@@ -20,3 +20,9 @@ sgc [-h] [-o outfile] [-d] infile
 * `-d` prints the symbol table and compiled gstal to stdout. When this option is selected nothing will be written to any output file even if the `-o` option is used
 .
 * `-o outfile` specify a file to output the gstal to if not included defaults to `a.gstal`. It is recommended to name your files with the .gstal exstension although not required.
+
+## Known Bugs
+* There is a known issue in the grammar where an expression in counting loops that ends in a 
+real constant will cause a syntax error ie. `0+0.1` causes a syntax error but `0.1+0` does not. 
+This seems to be an issue in the range part of the grammar in counting loops and it is possible 
+it may be caused by the 2 shift reduce conflicts existing in the grammar.

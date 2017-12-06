@@ -93,7 +93,10 @@ int counting_gen(ast *a) {
     // load, evaluate and store counting variable
     ADD_UNARY("NOP ; initialize counting");
     add_varref(a->unary);
-    expr_gen(a->l->l);
+    int ltype = expr_gen(a->l->l);
+    if (ltype == REAL_CONST) {
+        ADD_UNARY("FTI ; only integers can be counted")
+    }
     ADD_UNARY("STO");
 
     // load, evaluate and store synthesized loop variable
@@ -110,7 +113,11 @@ int counting_gen(ast *a) {
     loopcount++;
 
     ADD_CODE("LRA %d ; %s", s->addr, s->name);
-    expr_gen(a->l->r);
+    int rtype = expr_gen(a->l->r);    
+    if (rtype == REAL_CONST) {
+        ADD_UNARY("FTI");
+    }
+    
     ADD_UNARY("STO");
 
     ADD_UNARY("NOP ; begin counting");

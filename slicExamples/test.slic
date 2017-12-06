@@ -2,9 +2,13 @@ main;
 
     data:
         integer: x;
+		real: y;
     
     algorithm:
-        x := ~10 & ~9;
-        print x;
-   
+		#print x, !;
+		counting x upward 0.1 to 9 ;
+			print x, !;
+   		end counting;
+
+		
 end main;
